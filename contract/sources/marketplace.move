@@ -48,4 +48,13 @@ module contract::marketplace {
         object::delete(id);
     }
 
+    public fun get_price(dataset: &Dataset):u64{
+        dataset.price
+    }
+    public fun get_owner(dataset: &Dataset):address{
+        dataset.owner
+    }
+    public fun increase_amount_sold(dataset: &mut Dataset){
+        dataset.amount_sold = dataset.amount_sold + dataset.price;
+    }
 }
