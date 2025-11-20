@@ -1,7 +1,13 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { BookOpen, FileText, MessageCircle } from "lucide-react";
-import PublishWizard from "@/components/Publish/PublishWizard";
+
+// Import PublishWizard with no SSR to avoid WASM loading issues
+const PublishWizard = dynamic(
+  () => import("@/components/Publish/PublishWizard"),
+  { ssr: false }
+);
 
 export default function PublishPage() {
   return (

@@ -5,7 +5,7 @@ import useWalrus from "./useWalrus";
 export default function useMarketplace() {
   const [loading, setLoading] = useState(false);
   const {encrypt, decrypt} = useSeal();
-  const {uploadFileToWalrus, fetchBlobFromWalrus} = useWalrus();
+  const {uploadFileToWalrus, fetchBlobFromWalrus, isReady} = useWalrus();
 
   const uploadFile = async (file: File, title: string, filename: string, filetype: string, description: string, tags: string[], price: number, release_date: number) => {
     setLoading(true);
@@ -45,5 +45,6 @@ export default function useMarketplace() {
     loading,
     uploadFile,
     getFile,
+    isReady,
   };
 }
