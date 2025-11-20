@@ -1,4 +1,5 @@
 import React from "react";
+import { Lock, HardDrive, Fingerprint } from "lucide-react";
 
 const WhyUs = () => {
   return (
@@ -26,7 +27,7 @@ const WhyUs = () => {
             <ul className="space-y-6">
               <li className="flex items-start gap-4 group">
                 <div className="w-12 h-12 rounded bg-hydro/10 flex items-center justify-center text-hydro shrink-0 group-hover:scale-110 transition-transform duration-300">
-                  <i data-lucide="lock" className="w-6 h-6"></i>
+                  <Lock className="w-6 h-6" />
                 </div>
                 <div>
                   <h4 className="font-sans font-bold text-white group-hover:text-hydro transition-colors">
@@ -41,7 +42,7 @@ const WhyUs = () => {
               </li>
               <li className="flex items-start gap-4 group">
                 <div className="w-12 h-12 rounded bg-yuzu/10 flex items-center justify-center text-yuzu shrink-0 group-hover:scale-110 transition-transform duration-300">
-                  <i data-lucide="hard-drive" className="w-6 h-6"></i>
+                  <HardDrive className="w-6 h-6" />
                 </div>
                 <div>
                   <h4 className="font-sans font-bold text-white group-hover:text-yuzu transition-colors">
@@ -56,7 +57,7 @@ const WhyUs = () => {
               </li>
               <li className="flex items-start gap-4 group">
                 <div className="w-12 h-12 rounded bg-grass/10 flex items-center justify-center text-grass shrink-0 group-hover:scale-110 transition-transform duration-300">
-                  <i data-lucide="fingerprint" className="w-6 h-6"></i>
+                  <Fingerprint className="w-6 h-6" />
                 </div>
                 <div>
                   <h4 className="font-sans font-bold text-white group-hover:text-grass transition-colors">

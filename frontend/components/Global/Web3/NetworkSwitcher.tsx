@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { ChevronDown, Check } from "lucide-react";
 import { useCurrentWallet } from "@mysten/dapp-kit";
 import Badge from "@/components/Common/Badge";
 
@@ -48,10 +49,9 @@ export function NetworkSwitcher() {
         <span className="font-mono text-xs text-white hidden md:inline">
           {currentNetworkObj?.label}
         </span>
-        <i
-          data-lucide="chevron-down"
+        <ChevronDown
           className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`}
-        ></i>
+        />
       </button>
 
       {isOpen && (
@@ -74,7 +74,7 @@ export function NetworkSwitcher() {
                 {network.label}
               </span>
               {selectedNetwork === network.value && (
-                <i data-lucide="check" className="w-4 h-4 text-yuzu"></i>
+                <Check className="w-4 h-4 text-yuzu" />
               )}
             </button>
           ))}

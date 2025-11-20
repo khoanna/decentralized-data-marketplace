@@ -1,4 +1,5 @@
 "use client";
+import { ArrowRight, Check, CheckCircle, Coins, Copy, Database, DollarSign, ExternalLink, Eye, FileText, Globe, Image as ImageIcon, Link, Loader, Settings, Upload, X } from "lucide-react";
 
 import { PublishFormData } from "./PublishWizard";
 import { useState, useEffect } from "react";
@@ -15,7 +16,7 @@ type DeployStep = {
   id: number;
   title: string;
   description: string;
-  icon: string;
+  icon: React.ReactNode;
   status: "pending" | "processing" | "complete" | "error";
   txHash?: string;
 };
@@ -32,28 +33,28 @@ const DeployProgress = ({ formData }: DeployProgressProps) => {
       id: 1,
       title: "Mint NFT",
       description: "Creating unique NFT for your dataset",
-      icon: "image",
+      icon: <ImageIcon className="w-6 h-6" />,
       status: "pending",
     },
     {
       id: 2,
       title: "Deploy Datatoken",
       description: "Deploying ERC20 access tokens",
-      icon: "coins",
+      icon: <Coins className="w-6 h-6" />,
       status: "pending",
     },
     {
       id: 3,
       title: "Publish Metadata",
       description: "Storing encrypted metadata on-chain",
-      icon: "database",
+      icon: <Database className="w-6 h-6" />,
       status: "pending",
     },
     {
       id: 4,
       title: "Set Pricing",
       description: "Configuring pricing and access rules",
-      icon: "dollar-sign",
+      icon: <DollarSign className="w-6 h-6" />,
       status: "pending",
     },
   ]);
@@ -145,16 +146,13 @@ const DeployProgress = ({ formData }: DeployProgressProps) => {
                 }`}
               >
                 {step.status === "complete" ? (
-                  <i data-lucide="check" className="w-6 h-6 text-success"></i>
+                  <Check className="w-6 h-6 text-success" />
                 ) : step.status === "processing" ? (
                   <div className="w-5 h-5 border-2 border-yuzu border-t-transparent rounded-full animate-spin"></div>
                 ) : step.status === "error" ? (
-                  <i data-lucide="x" className="w-6 h-6 text-error"></i>
+                  <X className="w-6 h-6 text-error" />
                 ) : (
-                  <i
-                    data-lucide={step.icon}
-                    className="w-6 h-6 text-gray-500"
-                  ></i>
+                  step.icon
                 )}
               </div>
 
@@ -202,7 +200,7 @@ const DeployProgress = ({ formData }: DeployProgressProps) => {
                     className="font-mono text-xs text-hydro hover:underline flex items-center gap-1 mt-2"
                   >
                     {step.txHash.slice(0, 12)}...{step.txHash.slice(-10)}
-                    <i data-lucide="external-link" className="w-3 h-3"></i>
+                    <ExternalLink className="w-3 h-3" />
                   </a>
                 )}
               </div>
@@ -216,7 +214,7 @@ const DeployProgress = ({ formData }: DeployProgressProps) => {
         <div className="glass-card p-6 rounded-lg border border-success/30 space-y-4 animate-scaleIn">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 rounded-full bg-success/20 border-2 border-success flex items-center justify-center">
-              <i data-lucide="check-circle" className="w-6 h-6 text-success"></i>
+              <CheckCircle className="w-6 h-6 text-success" />
             </div>
             <div>
               <h3 className="font-sans font-bold text-white text-lg">
@@ -277,7 +275,7 @@ const DeployProgress = ({ formData }: DeployProgressProps) => {
                 "Earn rewards through data farming",
               ].map((item, i) => (
                 <li key={i} className="flex items-center gap-2">
-                  <i data-lucide="arrow-right" className="w-3 h-3 text-yuzu"></i>
+                  <ArrowRight className="w-3 h-3 text-yuzu" />
                   <span className="font-mono text-xs text-gray-300">{item}</span>
                 </li>
               ))}
@@ -292,7 +290,7 @@ const DeployProgress = ({ formData }: DeployProgressProps) => {
               onClick={handleViewDataset}
               className="flex-1"
             >
-              <i data-lucide="eye" className="w-5 h-5"></i>
+              <Eye className="w-5 h-5" />
               View in Marketplace
             </Button>
             <Button
@@ -304,7 +302,7 @@ const DeployProgress = ({ formData }: DeployProgressProps) => {
               }}
               className="flex-1"
             >
-              <i data-lucide="copy" className="w-5 h-5"></i>
+              <Copy className="w-5 h-5" />
               Copy DID
             </Button>
           </div>

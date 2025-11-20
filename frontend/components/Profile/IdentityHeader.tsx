@@ -1,4 +1,5 @@
 "use client";
+import { Calendar, CheckCircle, Copy, Github, Globe, Settings, Share2, Star, Twitter, UserPlus } from "lucide-react";
 
 import { truncateAddress, stringToColor, copyToClipboard } from "@/lib/utils";
 import { useToast } from "@/hooks/useToast";
@@ -83,7 +84,7 @@ const IdentityHeader = ({ address }: IdentityHeaderProps) => {
                   </h1>
                   {userData.verified && (
                     <Badge variant="success" size="md">
-                      <i data-lucide="check-circle" className="w-4 h-4"></i>
+                      <CheckCircle className="w-4 h-4" />
                       Verified
                     </Badge>
                   )}
@@ -97,7 +98,7 @@ const IdentityHeader = ({ address }: IdentityHeaderProps) => {
                   <span className="font-mono text-sm text-gray-400 group-hover:text-yuzu transition-colors">
                     {truncateAddress(address)}
                   </span>
-                  <i data-lucide="copy" className="w-3 h-3 text-gray-500 group-hover:text-yuzu transition-colors"></i>
+                  <Copy className="w-3 h-3 text-gray-500 group-hover:text-yuzu transition-colors" />
                 </button>
 
                 <p className="font-mono text-sm text-gray-400 max-w-2xl leading-relaxed">
@@ -109,17 +110,17 @@ const IdentityHeader = ({ address }: IdentityHeaderProps) => {
               <div className="flex items-center gap-2 flex-shrink-0">
                 {isOwnProfile ? (
                   <Button variant="outline" size="md">
-                    <i data-lucide="settings" className="w-4 h-4"></i>
+                    <Settings className="w-4 h-4" />
                     Edit Profile
                   </Button>
                 ) : (
                   <Button variant="primary" size="md">
-                    <i data-lucide="user-plus" className="w-4 h-4"></i>
+                    <UserPlus className="w-4 h-4" />
                     Follow
                   </Button>
                 )}
                 <Button variant="ghost" size="md" onClick={handleShare}>
-                  <i data-lucide="share-2" className="w-4 h-4"></i>
+                  <Share2 className="w-4 h-4" />
                 </Button>
               </div>
             </div>
@@ -153,15 +154,14 @@ const IdentityHeader = ({ address }: IdentityHeaderProps) => {
                   </p>
                   <div className="flex">
                     {[1, 2, 3, 4, 5].map((star) => (
-                      <i
+                      <Star
                         key={star}
-                        data-lucide="star"
                         className={`w-4 h-4 ${
                           star <= Math.floor(userData.stats.reputation / 20)
                             ? "text-grass fill-grass"
                             : "text-gray-600"
                         }`}
-                      ></i>
+                      />
                     ))}
                   </div>
                 </div>
@@ -171,7 +171,7 @@ const IdentityHeader = ({ address }: IdentityHeaderProps) => {
             {/* Socials & Metadata */}
             <div className="flex flex-wrap items-center gap-4 text-xs">
               <div className="flex items-center gap-1.5 text-gray-500">
-                <i data-lucide="calendar" className="w-3 h-3"></i>
+                <Calendar className="w-3 h-3" />
                 <span className="font-mono">Joined {userData.joinedDate}</span>
               </div>
 
@@ -182,7 +182,7 @@ const IdentityHeader = ({ address }: IdentityHeaderProps) => {
                   rel="noopener noreferrer"
                   className="flex items-center gap-1.5 text-gray-500 hover:text-hydro transition-colors"
                 >
-                  <i data-lucide="twitter" className="w-3 h-3"></i>
+                  <Twitter className="w-3 h-3" />
                   <span className="font-mono">{userData.socials.twitter}</span>
                 </a>
               )}
@@ -194,7 +194,7 @@ const IdentityHeader = ({ address }: IdentityHeaderProps) => {
                   rel="noopener noreferrer"
                   className="flex items-center gap-1.5 text-gray-500 hover:text-hydro transition-colors"
                 >
-                  <i data-lucide="github" className="w-3 h-3"></i>
+                  <Github className="w-3 h-3" />
                   <span className="font-mono">{userData.socials.github}</span>
                 </a>
               )}
@@ -206,7 +206,7 @@ const IdentityHeader = ({ address }: IdentityHeaderProps) => {
                   rel="noopener noreferrer"
                   className="flex items-center gap-1.5 text-gray-500 hover:text-hydro transition-colors"
                 >
-                  <i data-lucide="globe" className="w-3 h-3"></i>
+                  <Globe className="w-3 h-3" />
                   <span className="font-mono">{userData.socials.website}</span>
                 </a>
               )}

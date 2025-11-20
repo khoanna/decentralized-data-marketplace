@@ -1,7 +1,8 @@
 "use client";
+import { CreditCard, Database, Gift, Lock, ShieldCheck, ShoppingCart, TrendingUp } from "lucide-react";
 
 import { useState } from "react";
-import { Asset } from "@/lib/mockData";
+import { Asset } from "@/type/Item";
 import { formatPrice, capyToUSD, formatUSD } from "@/lib/utils";
 import Badge from "@/components/Common/Badge";
 import Button from "@/components/Common/Button";
@@ -27,7 +28,7 @@ const FinancialModule = ({ asset }: FinancialModuleProps) => {
     <>
       <div className="glass-card p-6 sticky top-24 reveal delay-300">
         <h3 className="text-xl font-sans font-bold text-white mb-6 flex items-center gap-2">
-          <i data-lucide="credit-card" className="w-5 h-5 text-yuzu"></i>
+          <CreditCard className="w-5 h-5 text-yuzu" />
           Purchase Access
         </h3>
 
@@ -35,7 +36,7 @@ const FinancialModule = ({ asset }: FinancialModuleProps) => {
         {asset.priceModel === "free" ? (
           <div className="mb-6">
             <Badge variant="success" size="lg" className="w-full justify-center py-4">
-              <i data-lucide="gift" className="w-6 h-6"></i>
+              <Gift className="w-6 h-6" />
               <span className="text-lg">FREE ACCESS</span>
             </Badge>
           </div>
@@ -58,7 +59,7 @@ const FinancialModule = ({ asset }: FinancialModuleProps) => {
         {asset.priceModel === "dynamic" && (
           <div className="mb-6 p-4 glass-input rounded-lg">
             <p className="font-mono text-xs text-gray-400 mb-3 flex items-center gap-2">
-              <i data-lucide="trending-up" className="w-3 h-3"></i>
+              <TrendingUp className="w-3 h-3" />
               Price History (AMM)
             </p>
             <div className="flex items-end justify-between h-20 gap-1">
@@ -103,7 +104,7 @@ const FinancialModule = ({ asset }: FinancialModuleProps) => {
           onClick={() => setShowPaymentModal(true)}
           className="w-full mb-4"
         >
-          <i data-lucide="shopping-cart" className="w-5 h-5"></i>
+          <ShoppingCart className="w-5 h-5" />
           {asset.priceModel === "free" ? "Get Free Access" : "Buy Access"}
         </Button>
 
@@ -124,15 +125,15 @@ const FinancialModule = ({ asset }: FinancialModuleProps) => {
         {/* Additional Info */}
         <div className="mt-6 space-y-3">
           <div className="flex items-center gap-2 text-xs font-mono text-gray-400">
-            <i data-lucide="shield-check" className="w-4 h-4 text-success"></i>
+            <ShieldCheck className="w-4 h-4 text-success" />
             Secured by blockchain
           </div>
           <div className="flex items-center gap-2 text-xs font-mono text-gray-400">
-            <i data-lucide="lock" className="w-4 h-4 text-hydro"></i>
+            <Lock className="w-4 h-4 text-hydro" />
             Encrypted with Seal protocol
           </div>
           <div className="flex items-center gap-2 text-xs font-mono text-gray-400">
-            <i data-lucide="database" className="w-4 h-4 text-grass"></i>
+            <Database className="w-4 h-4 text-grass" />
             Stored on Walrus network
           </div>
         </div>

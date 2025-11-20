@@ -1,4 +1,5 @@
 "use client";
+import { Check, Database, DollarSign, File, FileText, Globe, Hash, Link, Loader, Lock, Settings, Shield, Upload, UploadCloud, X, Cloud, Archive } from "lucide-react";
 
 import { PublishFormData } from "./PublishWizard";
 import { Input } from "@/components/Common/Input";
@@ -16,25 +17,25 @@ const AssetLocationStep = ({ formData, updateFormData }: AssetLocationStepProps)
   const storageOptions = [
     {
       type: "url" as const,
-      icon: "link",
+      icon: <Link className="w-6 h-6" />,
       label: "URL",
       description: "Link to data hosted elsewhere",
     },
     {
       type: "ipfs" as const,
-      icon: "cloud",
+      icon: <Cloud className="w-6 h-6" />,
       label: "IPFS",
       description: "InterPlanetary File System CID",
     },
     {
       type: "arweave" as const,
-      icon: "archive",
+      icon: <Archive className="w-6 h-6" />,
       label: "Arweave",
       description: "Permanent storage transaction ID",
     },
     {
       type: "upload" as const,
-      icon: "upload",
+      icon: <Upload className="w-6 h-6" />,
       label: "Upload File",
       description: "Upload to Walrus network",
     },
@@ -115,14 +116,7 @@ const AssetLocationStep = ({ formData, updateFormData }: AssetLocationStepProps)
                   : "border-white/10 glass-input hover:border-yuzu/50"
               }`}
             >
-              <i
-                data-lucide={option.icon}
-                className={`w-6 h-6 mb-2 transition-colors ${
-                  formData.locationType === option.type
-                    ? "text-yuzu"
-                    : "text-gray-400 group-hover:text-yuzu"
-                }`}
-              ></i>
+              {option.icon}
               <p
                 className={`font-mono text-sm font-bold mb-1 transition-colors ${
                   formData.locationType === option.type
@@ -148,7 +142,7 @@ const AssetLocationStep = ({ formData, updateFormData }: AssetLocationStepProps)
           value={formData.locationValue}
           onChange={(e) => updateFormData({ locationValue: e.target.value })}
           hint="Must be publicly accessible or use authentication headers"
-          icon={<i data-lucide="globe" className="w-4 h-4"></i>}
+          icon={<Globe className="w-4 h-4" />}
         />
       )}
 
@@ -160,7 +154,7 @@ const AssetLocationStep = ({ formData, updateFormData }: AssetLocationStepProps)
           value={formData.locationValue}
           onChange={(e) => updateFormData({ locationValue: e.target.value })}
           hint="Content Identifier on IPFS network"
-          icon={<i data-lucide="hash" className="w-4 h-4"></i>}
+          icon={<Hash className="w-4 h-4" />}
         />
       )}
 
@@ -172,7 +166,7 @@ const AssetLocationStep = ({ formData, updateFormData }: AssetLocationStepProps)
           value={formData.locationValue}
           onChange={(e) => updateFormData({ locationValue: e.target.value })}
           hint="Transaction ID on Arweave network"
-          icon={<i data-lucide="shield" className="w-4 h-4"></i>}
+          icon={<Shield className="w-4 h-4" />}
         />
       )}
 
@@ -208,14 +202,11 @@ const AssetLocationStep = ({ formData, updateFormData }: AssetLocationStepProps)
                       : "bg-white/5 group-hover:bg-yuzu/10"
                   }`}
                 >
-                  <i
-                    data-lucide="upload-cloud"
-                    className={`w-8 h-8 transition-colors ${
+                  <UploadCloud className={`w-8 h-8 transition-colors ${
                       isDragging
                         ? "text-yuzu"
                         : "text-gray-400 group-hover:text-yuzu"
-                    }`}
-                  ></i>
+                    }`} />
                 </div>
                 <p className="font-mono text-sm text-white mb-2">
                   Drop your file here, or{" "}
@@ -230,7 +221,7 @@ const AssetLocationStep = ({ formData, updateFormData }: AssetLocationStepProps)
             <div className="glass-card p-6 rounded-lg">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-lg bg-yuzu/20 flex items-center justify-center flex-shrink-0">
-                  <i data-lucide="file" className="w-6 h-6 text-yuzu"></i>
+                  <File className="w-6 h-6 text-yuzu" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-mono text-sm text-white font-bold mb-1 truncate">
@@ -255,7 +246,7 @@ const AssetLocationStep = ({ formData, updateFormData }: AssetLocationStepProps)
                   onClick={handleRemoveFile}
                   className="p-2 hover:bg-white/10 rounded-lg transition-colors"
                 >
-                  <i data-lucide="x" className="w-5 h-5 text-gray-400"></i>
+                  <X className="w-5 h-5 text-gray-400" />
                 </button>
               </div>
             </div>
@@ -266,7 +257,7 @@ const AssetLocationStep = ({ formData, updateFormData }: AssetLocationStepProps)
       {/* Encryption Notice */}
       <div className="p-4 glass-input rounded-lg border border-hydro/30">
         <div className="flex items-start gap-3">
-          <i data-lucide="lock" className="w-5 h-5 text-hydro mt-0.5 flex-shrink-0"></i>
+          <Lock className="w-5 h-5 text-hydro mt-0.5 flex-shrink-0" />
           <div>
             <p className="font-mono text-sm text-white mb-2 font-bold">
               Seal Protocol Encryption
@@ -283,7 +274,7 @@ const AssetLocationStep = ({ formData, updateFormData }: AssetLocationStepProps)
       {formData.locationType === "upload" && (
         <div className="p-4 glass-input rounded-lg border border-grass/30">
           <div className="flex items-start gap-3">
-            <i data-lucide="database" className="w-5 h-5 text-grass mt-0.5 flex-shrink-0"></i>
+            <Database className="w-5 h-5 text-grass mt-0.5 flex-shrink-0" />
             <div>
               <p className="font-mono text-sm text-white mb-2 font-bold">
                 Walrus Decentralized Storage

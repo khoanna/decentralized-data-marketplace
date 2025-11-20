@@ -1,4 +1,5 @@
 "use client";
+import { Check, Coins, Database, DollarSign, FileText, Gift, Globe, Info, Link, Loader, Settings, Sparkles, Tag, TrendingUp, Upload } from "lucide-react";
 
 import { PublishFormData } from "./PublishWizard";
 import { Input, Select } from "@/components/Common/Input";
@@ -13,21 +14,21 @@ const PricingStep = ({ formData, updateFormData }: PricingStepProps) => {
   const pricingModels = [
     {
       value: "free" as const,
-      icon: "gift",
+      icon: <Gift className="w-6 h-6" />,
       label: "Free",
       description: "Open access for everyone",
       details: "No payment required. Great for building reputation and community.",
     },
     {
       value: "fixed" as const,
-      icon: "tag",
+      icon: <Tag className="w-6 h-6" />,
       label: "Fixed Price",
       description: "Set a one-time purchase price",
       details: "Buyers pay a fixed amount of CAPY tokens for permanent access.",
     },
     {
       value: "dynamic" as const,
-      icon: "trending-up",
+      icon: <TrendingUp className="w-6 h-6" />,
       label: "Dynamic (AMM)",
       description: "Automated Market Maker bonding curve",
       details: "Price adjusts automatically based on supply and demand. Early buyers get lower prices.",
@@ -77,14 +78,7 @@ const PricingStep = ({ formData, updateFormData }: PricingStepProps) => {
                   : "border-white/10 glass-input hover:border-yuzu/50"
               }`}
             >
-              <i
-                data-lucide={model.icon}
-                className={`w-8 h-8 mb-3 transition-colors ${
-                  formData.pricingModel === model.value
-                    ? "text-yuzu"
-                    : "text-gray-400 group-hover:text-yuzu"
-                }`}
-              ></i>
+              {model.icon}
               <p
                 className={`font-mono text-sm font-bold mb-2 transition-colors ${
                   formData.pricingModel === model.value
@@ -109,7 +103,7 @@ const PricingStep = ({ formData, updateFormData }: PricingStepProps) => {
       {formData.pricingModel !== "free" && (
         <div className="glass-card p-6 rounded-lg">
           <div className="flex items-center gap-2 mb-4">
-            <i data-lucide="coins" className="w-5 h-5 text-yuzu"></i>
+            <Coins className="w-5 h-5 text-yuzu" />
             <h3 className="font-sans font-bold text-white">
               {formData.pricingModel === "fixed" ? "Set Price" : "Initial Price"}
             </h3>
@@ -127,13 +121,13 @@ const PricingStep = ({ formData, updateFormData }: PricingStepProps) => {
                   ? `≈ ${formatUSD(capyToUSD(formData.price))}`
                   : "Enter amount in CAPY tokens"
               }
-              icon={<i data-lucide="dollar-sign" className="w-4 h-4"></i>}
+              icon={<DollarSign className="w-4 h-4" />}
             />
 
             {formData.pricingModel === "dynamic" && (
               <div className="p-4 glass-input rounded-lg border border-info/30">
                 <div className="flex items-start gap-3">
-                  <i data-lucide="info" className="w-5 h-5 text-info mt-0.5"></i>
+                  <Info className="w-5 h-5 text-info mt-0.5" />
                   <div>
                     <p className="font-mono text-sm text-white mb-2 font-bold">
                       AMM Bonding Curve
@@ -183,7 +177,7 @@ const PricingStep = ({ formData, updateFormData }: PricingStepProps) => {
       {formData.pricingModel === "free" && (
         <div className="p-6 glass-card rounded-lg border border-success/30">
           <div className="flex items-start gap-3 mb-4">
-            <i data-lucide="sparkles" className="w-6 h-6 text-success"></i>
+            <Sparkles className="w-6 h-6 text-success" />
             <div>
               <h3 className="font-sans font-bold text-white mb-2">
                 Free Access Benefits
@@ -201,7 +195,7 @@ const PricingStep = ({ formData, updateFormData }: PricingStepProps) => {
               "Qualify for data farming rewards",
             ].map((benefit, i) => (
               <li key={i} className="flex items-center gap-2">
-                <i data-lucide="check" className="w-4 h-4 text-success"></i>
+                <Check className="w-4 h-4 text-success" />
                 <span className="font-mono text-xs text-gray-300">{benefit}</span>
               </li>
             ))}
@@ -221,7 +215,7 @@ const PricingStep = ({ formData, updateFormData }: PricingStepProps) => {
       {/* License Info */}
       <div className="p-4 glass-input rounded-lg">
         <div className="flex items-start gap-3">
-          <i data-lucide="file-text" className="w-5 h-5 text-gray-400 mt-0.5"></i>
+          <FileText className="w-5 h-5 text-gray-400 mt-0.5" />
           <div>
             <p className="font-mono text-sm text-white mb-2">
               About Licenses
@@ -239,7 +233,7 @@ const PricingStep = ({ formData, updateFormData }: PricingStepProps) => {
       {formData.pricingModel !== "free" && formData.price > 0 && (
         <div className="glass-card p-6 rounded-lg border border-yuzu/30">
           <div className="flex items-center gap-2 mb-4">
-            <i data-lucide="trending-up" className="w-5 h-5 text-yuzu"></i>
+            <TrendingUp className="w-5 h-5 text-yuzu" />
             <h3 className="font-sans font-bold text-white">
               Revenue Projection
             </h3>

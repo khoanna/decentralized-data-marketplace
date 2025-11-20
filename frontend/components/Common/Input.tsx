@@ -1,4 +1,5 @@
 import React from "react";
+import { AlertCircle } from "lucide-react";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -51,7 +52,7 @@ export const Input = ({
       </div>
       {error && (
         <p className="mt-1 text-xs font-mono text-error flex items-center gap-1">
-          <i data-lucide="alert-circle" className="w-3 h-3"></i>
+          <AlertCircle className="w-3 h-3" />
           {error}
         </p>
       )}
@@ -84,7 +85,7 @@ export const TextArea = ({
       />
       {error && (
         <p className="mt-1 text-xs font-mono text-error flex items-center gap-1">
-          <i data-lucide="alert-circle" className="w-3 h-3"></i>
+          <AlertCircle className="w-3 h-3" />
           {error}
         </p>
       )}
@@ -128,7 +129,7 @@ export const Select = ({
       </select>
       {error && (
         <p className="mt-1 text-xs font-mono text-error flex items-center gap-1">
-          <i data-lucide="alert-circle" className="w-3 h-3"></i>
+          <AlertCircle className="w-3 h-3" />
           {error}
         </p>
       )}

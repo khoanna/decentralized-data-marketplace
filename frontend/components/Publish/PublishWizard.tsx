@@ -1,4 +1,5 @@
 "use client";
+import { ArrowLeft, ArrowRight, Check, Database, DollarSign, FileText, Globe, Link, Loader, MapPin, Rocket, Settings, Upload } from "lucide-react";
 
 import { useState } from "react";
 import MetadataStep from "./MetadataStep";
@@ -56,11 +57,11 @@ const PublishWizard = () => {
   const [formData, setFormData] = useState<PublishFormData>(INITIAL_FORM_DATA);
 
   const steps = [
-    { number: 1, title: "Metadata", icon: "file-text" },
-    { number: 2, title: "Asset Location", icon: "map-pin" },
-    { number: 3, title: "Pricing", icon: "dollar-sign" },
-    { number: 4, title: "Advanced", icon: "settings" },
-    { number: 5, title: "Deploy", icon: "rocket" },
+    { number: 1, title: "Metadata", icon: <FileText className="w-6 h-6" /> },
+    { number: 2, title: "Asset Location", icon: <MapPin className="w-6 h-6" /> },
+    { number: 3, title: "Pricing", icon: <DollarSign className="w-6 h-6" /> },
+    { number: 4, title: "Advanced", icon: <Settings className="w-6 h-6" /> },
+    { number: 5, title: "Deploy", icon: <Rocket className="w-6 h-6" /> },
   ];
 
   const updateFormData = (updates: Partial<PublishFormData>) => {
@@ -112,9 +113,9 @@ const PublishWizard = () => {
                   }`}
                 >
                   {currentStep > step.number ? (
-                    <i data-lucide="check" className="w-6 h-6"></i>
+                    <Check className="w-6 h-6" />
                   ) : (
-                    <i data-lucide={step.icon} className="w-6 h-6"></i>
+                    step.icon
                   )}
                 </div>
                 <span
@@ -167,7 +168,7 @@ const PublishWizard = () => {
             onClick={handleBack}
             disabled={currentStep === 1}
           >
-            <i data-lucide="arrow-left" className="w-5 h-5"></i>
+            <ArrowLeft className="w-5 h-5" />
             Back
           </Button>
 
@@ -178,7 +179,7 @@ const PublishWizard = () => {
             disabled={!canProceed()}
           >
             {currentStep === 4 ? "Deploy" : "Next"}
-            <i data-lucide="arrow-right" className="w-5 h-5"></i>
+            <ArrowRight className="w-5 h-5" />
           </Button>
         </div>
       )}

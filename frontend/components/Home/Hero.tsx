@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -30,7 +31,7 @@ const Hero = () => {
             <div className="flex flex-wrap gap-4 pt-4 reveal delay-300">
               <button className="bg-yuzu text-black px-8 py-4 rounded-lg font-bold font-mono text-sm hover:bg-white hover:scale-105 transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(255,159,28,0.4)]">
                 BROWSE DATASETS{" "}
-                <i data-lucide="arrow-right" className="w-4 h-4"></i>
+                <ArrowRight className="w-4 h-4" />
               </button>
               <button className="px-8 py-4 border border-white/20 rounded-lg font-mono text-sm hover:border-hydro hover:text-hydro transition-colors bg-black/40 backdrop-blur-sm">
                 LIST YOUR DATA
@@ -93,7 +94,7 @@ const Hero = () => {
               <div className="absolute -right-6 bottom-12 bg-panel border border-yuzu/30 p-4 rounded-xl shadow-xl backdrop-blur-md animate-[float_4s_ease-in-out_infinite_reverse] z-50">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-yuzu/10 rounded-full flex items-center justify-center text-yuzu">
-                    <i data-lucide="check-circle-2" className="w-6 h-6"></i>
+                    <CheckCircle2 className="w-6 h-6" />
                   </div>
                   <div>
                     <div className="text-xs font-mono text-gray-400">

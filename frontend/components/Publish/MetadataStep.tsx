@@ -2,6 +2,7 @@ import { PublishFormData } from "./PublishWizard";
 import { Input, TextArea, Select } from "@/components/Common/Input";
 import Badge from "@/components/Common/Badge";
 import { useState } from "react";
+import { Heading, Plus, Tag, User, X } from "lucide-react";
 
 interface MetadataStepProps {
   formData: PublishFormData;
@@ -58,7 +59,7 @@ const MetadataStep = ({ formData, updateFormData }: MetadataStepProps) => {
         value={formData.title}
         onChange={(e) => updateFormData({ title: e.target.value })}
         hint="Choose a clear, descriptive title"
-        icon={<i data-lucide="heading" className="w-4 h-4"></i>}
+        icon={<Heading className="w-4 h-4" />}
       />
 
       <TextArea
@@ -84,7 +85,7 @@ const MetadataStep = ({ formData, updateFormData }: MetadataStepProps) => {
         value={formData.author}
         onChange={(e) => updateFormData({ author: e.target.value })}
         hint="This will be publicly displayed"
-        icon={<i data-lucide="user" className="w-4 h-4"></i>}
+        icon={<User className="w-4 h-4" />}
       />
 
       {/* Tags */}
@@ -99,13 +100,13 @@ const MetadataStep = ({ formData, updateFormData }: MetadataStepProps) => {
             onChange={(e) => setTagInput(e.target.value)}
             onKeyPress={handleKeyPress}
             hint="Tags help buyers find your dataset"
-            icon={<i data-lucide="tag" className="w-4 h-4"></i>}
+            icon={<Tag className="w-4 h-4" />}
           />
           <button
             onClick={handleAddTag}
             className="px-4 py-3 glass-input rounded-lg hover:border-yuzu/50 transition-all flex items-center gap-2 font-mono text-sm text-white flex-shrink-0"
           >
-            <i data-lucide="plus" className="w-4 h-4"></i>
+            <Plus className="w-4 h-4" />
             Add
           </button>
         </div>
@@ -119,7 +120,7 @@ const MetadataStep = ({ formData, updateFormData }: MetadataStepProps) => {
                   onClick={() => handleRemoveTag(tag)}
                   className="ml-2 hover:text-error transition-colors"
                 >
-                  <i data-lucide="x" className="w-3 h-3"></i>
+                  <X className="w-3 h-3" />
                 </button>
               </Badge>
             ))}

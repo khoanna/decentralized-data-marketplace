@@ -2,6 +2,7 @@
 
 import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
+import { X } from "lucide-react";
 
 interface ModalProps {
   isOpen: boolean;
@@ -76,7 +77,7 @@ const Modal = ({
                 className="text-gray-400 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-lg"
                 aria-label="Close modal"
               >
-                <i data-lucide="x" className="w-6 h-6"></i>
+                <X className="w-6 h-6" />
               </button>
             )}
           </div>

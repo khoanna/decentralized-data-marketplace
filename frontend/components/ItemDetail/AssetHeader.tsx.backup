@@ -1,7 +1,8 @@
-import { Asset } from "@/lib/mockData";
+import { Asset } from "@/type/Item";
 import { truncateAddress, formatDate, timeAgo } from "@/lib/utils";
 import Badge from "@/components/Common/Badge";
 import Button from "@/components/Common/Button";
+import { Code, Copy, Database, ExternalLink, FileText, Film, Image, Link, Music, Send, ShieldCheck, ShoppingCart, Star, TrendingUp, Twitter, User } from "lucide-react";
 
 interface AssetHeaderProps {
   asset: Asset;
@@ -16,11 +17,13 @@ const AssetHeader = ({ asset }: AssetHeaderProps) => {
     sui: "text-cyan-400",
   };
 
-  const typeIcons: Record<string, string> = {
-    dataset: "database",
-    algorithm: "cpu",
-    stream: "radio",
-    storage: "hard-drive",
+  const typeIcons: Record<string, React.ReactElement> = {
+    dataset: <Database className="w-3 h-3" />,
+    model: <FileText className="w-3 h-3" />,
+    image: <Image className="w-3 h-3" />,
+    code: <Code className="w-3 h-3" />,
+    video: <Film className="w-3 h-3" />,
+    audio: <Music className="w-3 h-3" />,
   };
 
   return (
@@ -28,7 +31,7 @@ const AssetHeader = ({ asset }: AssetHeaderProps) => {
       {/* Badges Row */}
       <div className="flex flex-wrap items-center gap-2 mb-6">
         <Badge variant="type">
-          <i data-lucide={typeIcons[asset.type]} className="w-3 h-3"></i>
+          {typeIcons[asset.type] || <Database className="w-3 h-3" />}
           {asset.type.toUpperCase()}
         </Badge>
 
@@ -39,21 +42,21 @@ const AssetHeader = ({ asset }: AssetHeaderProps) => {
 
         {asset.featured && (
           <Badge variant="success">
-            <i data-lucide="star" className="w-3 h-3"></i>
+            <Star className="w-3 h-3" />
             FEATURED
           </Badge>
         )}
 
         {asset.c2dEnabled && (
           <Badge variant="info">
-            <i data-lucide="shield-check" className="w-3 h-3"></i>
+            <ShieldCheck className="w-3 h-3" />
             COMPUTE-TO-DATA
           </Badge>
         )}
 
         {asset.priceModel === "dynamic" && (
           <Badge variant="pending">
-            <i data-lucide="trending-up" className="w-3 h-3"></i>
+            <TrendingUp className="w-3 h-3" />
             DYNAMIC PRICING
           </Badge>
         )}
@@ -67,7 +70,7 @@ const AssetHeader = ({ asset }: AssetHeaderProps) => {
       {/* Owner Info */}
       <div className="flex items-center gap-4 mb-6">
         <div className="w-10 h-10 rounded-full bg-gradient-yuzu-hydro flex items-center justify-center">
-          <i data-lucide="user" className="w-5 h-5 text-black"></i>
+          <User className="w-5 h-5 text-black" />
         </div>
         <div>
           <p className="font-mono text-xs text-gray-400">Published by</p>
@@ -76,7 +79,7 @@ const AssetHeader = ({ asset }: AssetHeaderProps) => {
             className="font-mono text-sm text-white hover:text-yuzu transition-colors flex items-center gap-1"
           >
             {asset.owner.ens || truncateAddress(asset.owner.address)}
-            <i data-lucide="external-link" className="w-3 h-3"></i>
+            <ExternalLink className="w-3 h-3" />
           </a>
         </div>
       </div>
@@ -100,7 +103,7 @@ const AssetHeader = ({ asset }: AssetHeaderProps) => {
             className="flex-shrink-0 p-2 hover:bg-white/10 rounded-lg transition-colors group"
             title="Copy DID"
           >
-            <i data-lucide="copy" className="w-4 h-4 text-gray-400 group-hover:text-yuzu"></i>
+            <Copy className="w-4 h-4 text-gray-400 group-hover:text-yuzu" />
           </button>
         </div>
       </div>
@@ -134,7 +137,7 @@ const AssetHeader = ({ asset }: AssetHeaderProps) => {
         <div>
           <p className="font-mono text-xs text-gray-400 mb-1">Total Sales</p>
           <p className="font-mono text-sm text-white flex items-center gap-1">
-            <i data-lucide="shopping-cart" className="w-3 h-3"></i>
+            <ShoppingCart className="w-3 h-3" />
             {asset.sales}
           </p>
         </div>
@@ -150,13 +153,13 @@ const AssetHeader = ({ asset }: AssetHeaderProps) => {
       <div className="flex items-center gap-2 pt-6 border-t border-white/10 mt-6">
         <p className="font-mono text-xs text-gray-400 mr-2">Share:</p>
         <button className="p-2 glass-input rounded-lg hover:border-yuzu/50 transition-all group">
-          <i data-lucide="twitter" className="w-4 h-4 text-gray-400 group-hover:text-yuzu"></i>
+          <Twitter className="w-4 h-4 text-gray-400 group-hover:text-yuzu" />
         </button>
         <button className="p-2 glass-input rounded-lg hover:border-yuzu/50 transition-all group">
-          <i data-lucide="link" className="w-4 h-4 text-gray-400 group-hover:text-yuzu"></i>
+          <Link className="w-4 h-4 text-gray-400 group-hover:text-yuzu" />
         </button>
         <button className="p-2 glass-input rounded-lg hover:border-yuzu/50 transition-all group">
-          <i data-lucide="send" className="w-4 h-4 text-gray-400 group-hover:text-yuzu"></i>
+          <Send className="w-4 h-4 text-gray-400 group-hover:text-yuzu" />
         </button>
       </div>
     </div>

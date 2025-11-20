@@ -1,4 +1,5 @@
 import React from 'react'
+import { FileUp, Container, Banknote } from "lucide-react";
 
 const Flow = () => {
   return (
@@ -22,7 +23,7 @@ const Flow = () => {
                 <div className="relative group z-10 reveal delay-100">
                     <div className="w-24 h-24 bg-void border border-white/10 rounded-2xl flex items-center justify-center mb-8 group-hover:border-yuzu group-hover:shadow-[0_0_30px_rgba(255,159,28,0.2)] transition-all duration-500 relative">
                         <div className="absolute inset-0 bg-panel rounded-2xl translate-x-2 translate-y-2 -z-10 transition-transform group-hover:translate-x-1 group-hover:translate-y-1"></div>
-                        <i data-lucide="file-up" className="w-10 h-10 text-gray-400 group-hover:text-yuzu transition-colors"></i>
+                        <FileUp className="w-10 h-10 text-gray-400 group-hover:text-yuzu transition-colors" />
                         <div className="absolute -top-3 -right-3 w-8 h-8 bg-panel border border-white/10 rounded flex items-center justify-center font-mono text-xs text-yuzu font-bold">01</div>
                     </div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-3 group-hover:text-yuzu transition-colors">Seal & Upload</h3>
@@ -34,7 +35,7 @@ const Flow = () => {
                 <div className="relative group z-10 reveal delay-200">
                     <div className="w-24 h-24 bg-void border border-white/10 rounded-2xl flex items-center justify-center mb-8 group-hover:border-hydro group-hover:shadow-[0_0_30px_rgba(78,205,196,0.2)] transition-all duration-500 relative">
                         <div className="absolute inset-0 bg-panel rounded-2xl translate-x-2 translate-y-2 -z-10 transition-transform group-hover:translate-x-1 group-hover:translate-y-1"></div>
-                        <i data-lucide="container" className="w-10 h-10 text-gray-400 group-hover:text-hydro transition-colors"></i>
+                        <Container className="w-10 h-10 text-gray-400 group-hover:text-hydro transition-colors" />
                         <div className="absolute -top-3 -right-3 w-8 h-8 bg-panel border border-white/10 rounded flex items-center justify-center font-mono text-xs text-hydro font-bold">02</div>
                     </div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-3 group-hover:text-hydro transition-colors">Store on Walrus</h3>
@@ -46,7 +47,7 @@ const Flow = () => {
                 <div className="relative group z-10 reveal delay-300">
                     <div className="w-24 h-24 bg-void border border-white/10 rounded-2xl flex items-center justify-center mb-8 group-hover:border-grass group-hover:shadow-[0_0_30px_rgba(149,214,0,0.2)] transition-all duration-500 relative">
                         <div className="absolute inset-0 bg-panel rounded-2xl translate-x-2 translate-y-2 -z-10 transition-transform group-hover:translate-x-1 group-hover:translate-y-1"></div>
-                        <i data-lucide="banknote" className="w-10 h-10 text-gray-400 group-hover:text-grass transition-colors"></i>
+                        <Banknote className="w-10 h-10 text-gray-400 group-hover:text-grass transition-colors" />
                         <div className="absolute -top-3 -right-3 w-8 h-8 bg-panel border border-white/10 rounded flex items-center justify-center font-mono text-xs text-grass font-bold">03</div>
                     </div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-3 group-hover:text-grass transition-colors">Liquidate</h3>

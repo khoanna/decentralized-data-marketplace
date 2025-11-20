@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { ArrowRight, Check, ChevronDown, Coins, Copy, Database, Download, ExternalLink, LogOut, User, Wallet } from "lucide-react";
 import {
   useCurrentAccount,
   useDisconnectWallet,
@@ -13,7 +14,6 @@ import { formatSUI } from "@/lib/sui";
 import { useToast } from "@/hooks/useToast";
 import Modal from "@/components/Common/Modal";
 import Button from "@/components/Common/Button";
-import Badge from "@/components/Common/Badge";
 
 type Network = "mainnet" | "testnet" | "devnet" | "localnet";
 
@@ -110,7 +110,7 @@ export function WalletButton() {
           onClick={() => setShowWalletModal(true)}
           className="flex items-center gap-2"
         >
-          <i data-lucide="wallet" className="w-4 h-4"></i>
+          <Wallet className="w-4 h-4" />
           CONNECT WALLET
         </Button>
 
@@ -147,19 +147,13 @@ export function WalletButton() {
                     Click to connect
                   </p>
                 </div>
-                <i
-                  data-lucide="arrow-right"
-                  className="w-5 h-5 text-gray-400 group-hover:text-yuzu transition-colors"
-                ></i>
+                <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-yuzu transition-colors" />
               </button>
             ))}
 
             {wallets.length === 0 && (
               <div className="text-center py-8">
-                <i
-                  data-lucide="wallet"
-                  className="w-12 h-12 text-gray-600 mx-auto mb-3"
-                ></i>
+                <Wallet className="w-12 h-12 text-gray-600 mx-auto mb-3" />
                 <p className="font-mono text-sm text-gray-400">
                   No wallets detected. Please install a Sui wallet extension.
                 </p>
@@ -187,10 +181,7 @@ export function WalletButton() {
         </span>
 
         {/* Chevron */}
-        <i
-          data-lucide="chevron-down"
-          className={`w-4 h-4 text-gray-400 transition-transform ${showAccountMenu ? "rotate-180" : ""}`}
-        ></i>
+        <ChevronDown  />
       </button>
 
       {/* Account Dropdown Menu */}
@@ -200,7 +191,7 @@ export function WalletButton() {
           <div className="p-4 border-b border-white/10">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-12 h-12 rounded-full bg-gradient-yuzu-hydro flex items-center justify-center">
-                <i data-lucide="user" className="w-6 h-6 text-black"></i>
+                <User className="w-6 h-6 text-black" />
               </div>
               <div className="flex-1">
                 <p className="font-mono text-xs text-gray-400 mb-1">
@@ -217,10 +208,7 @@ export function WalletButton() {
                 onClick={handleCopyAddress}
                 className="flex-1 flex items-center justify-center gap-2 px-3 py-2 glass-input rounded-lg hover:border-yuzu/50 transition-all group text-xs font-mono text-gray-300"
               >
-                <i
-                  data-lucide="copy"
-                  className="w-3 h-3 group-hover:text-yuzu"
-                ></i>
+                <Copy className="w-3 h-3 group-hover:text-yuzu" />
                 Copy Address
               </button>
               <a
@@ -229,10 +217,7 @@ export function WalletButton() {
                 rel="noopener noreferrer"
                 className="flex-1 flex items-center justify-center gap-2 px-3 py-2 glass-input rounded-lg hover:border-yuzu/50 transition-all group text-xs font-mono text-gray-300"
               >
-                <i
-                  data-lucide="external-link"
-                  className="w-3 h-3 group-hover:text-yuzu"
-                ></i>
+                <ExternalLink className="w-3 h-3 group-hover:text-yuzu" />
                 Explorer
               </a>
             </div>
@@ -246,7 +231,7 @@ export function WalletButton() {
             <div className="space-y-2">
               <div className="flex items-center justify-between p-3 glass-input rounded-lg">
                 <div className="flex items-center gap-2">
-                  <i data-lucide="wallet" className="w-4 h-4 text-cyan-400"></i>
+                  <Wallet className="w-4 h-4 text-cyan-400" />
                   <span className="font-mono text-sm text-white">SUI</span>
                 </div>
                 <span className="font-mono text-sm font-bold text-white">
@@ -255,7 +240,7 @@ export function WalletButton() {
               </div>
               <div className="flex items-center justify-between p-3 glass-input rounded-lg">
                 <div className="flex items-center gap-2">
-                  <i data-lucide="coins" className="w-4 h-4 text-yuzu"></i>
+                  <Coins className="w-4 h-4 text-yuzu" />
                   <span className="font-mono text-sm text-white">CAPY</span>
                 </div>
                 <span className="font-mono text-sm font-bold text-yuzu">
@@ -286,7 +271,7 @@ export function WalletButton() {
                     {network.label}
                   </span>
                   {selectedNetwork === network.value && (
-                    <i data-lucide="check" className="w-4 h-4 text-yuzu"></i>
+                    <Check className="w-4 h-4 text-yuzu" />
                   )}
                 </button>
               ))}
@@ -299,10 +284,7 @@ export function WalletButton() {
               href={`/profile/${account.address}`}
               className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 transition-all group"
             >
-              <i
-                data-lucide="user"
-                className="w-4 h-4 text-gray-400 group-hover:text-yuzu"
-              ></i>
+              <User className="w-4 h-4 text-gray-400 group-hover:text-yuzu" />
               <span className="font-mono text-sm text-gray-300 group-hover:text-white flex-1">
                 My Profile
               </span>
@@ -312,10 +294,7 @@ export function WalletButton() {
               href={`/profile/${account.address}#published`}
               className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 transition-all group"
             >
-              <i
-                data-lucide="database"
-                className="w-4 h-4 text-gray-400 group-hover:text-yuzu"
-              ></i>
+              <Database className="w-4 h-4 text-gray-400 group-hover:text-yuzu" />
               <span className="font-mono text-sm text-gray-300 group-hover:text-white flex-1">
                 My Assets
               </span>
@@ -325,10 +304,7 @@ export function WalletButton() {
               href={`/profile/${account.address}#downloads`}
               className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 transition-all group"
             >
-              <i
-                data-lucide="download"
-                className="w-4 h-4 text-gray-400 group-hover:text-yuzu"
-              ></i>
+              <Download className="w-4 h-4 text-gray-400 group-hover:text-yuzu" />
               <span className="font-mono text-sm text-gray-300 group-hover:text-white flex-1">
                 My Downloads
               </span>
@@ -340,10 +316,7 @@ export function WalletButton() {
               onClick={handleDisconnect}
               className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-error/10 transition-all group"
             >
-              <i
-                data-lucide="log-out"
-                className="w-4 h-4 text-gray-400 group-hover:text-error"
-              ></i>
+              <LogOut className="w-4 h-4 text-gray-400 group-hover:text-error" />
               <span className="font-mono text-sm text-gray-300 group-hover:text-error flex-1 text-left">
                 Disconnect
               </span>

@@ -4,6 +4,8 @@ import { useState } from "react";
 import { formatPrice, formatUSD, capyToUSD, timeAgo } from "@/lib/utils";
 import Button from "@/components/Common/Button";
 import { useToast } from "@/hooks/useToast";
+import { ArrowRight, BarChart2, Check, Clock, Download, DownloadCloud, ExternalLink, Lightbulb, List, Lock, TrendingUp, Wallet, Gift, Unlock } from "lucide-react";
+
 
 interface FinancialsTabProps {
   address: string;
@@ -93,13 +95,13 @@ const FinancialsTab = ({ address }: FinancialsTabProps) => {
   const getTransactionIcon = (type: Transaction["type"]) => {
     switch (type) {
       case "sale":
-        return "trending-up";
+        return <TrendingUp className="w-5 h-5" />;
       case "reward":
-        return "gift";
+        return <Gift className="w-5 h-5" />;
       case "stake":
-        return "lock";
+        return <Lock className="w-5 h-5" />;
       case "unstake":
-        return "unlock";
+        return <Unlock className="w-5 h-5" />;
     }
   };
 
@@ -122,7 +124,7 @@ const FinancialsTab = ({ address }: FinancialsTabProps) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="glass-card p-5 rounded-lg border border-success/30">
           <p className="font-mono text-xs text-gray-400 mb-2 flex items-center gap-2">
-            <i data-lucide="wallet" className="w-3 h-3"></i>
+            <Wallet className="w-3 h-3" />
             Available to Claim
           </p>
           <p className="font-sans text-3xl font-bold text-success mb-1">
@@ -136,7 +138,7 @@ const FinancialsTab = ({ address }: FinancialsTabProps) => {
 
         <div className="glass-card p-5 rounded-lg border border-pending/30">
           <p className="font-mono text-xs text-gray-400 mb-2 flex items-center gap-2">
-            <i data-lucide="clock" className="w-3 h-3"></i>
+            <Clock className="w-3 h-3" />
             Pending
           </p>
           <p className="font-sans text-3xl font-bold text-pending mb-1">
@@ -150,7 +152,7 @@ const FinancialsTab = ({ address }: FinancialsTabProps) => {
 
         <div className="glass-card p-5 rounded-lg border border-hydro/30">
           <p className="font-mono text-xs text-gray-400 mb-2 flex items-center gap-2">
-            <i data-lucide="lock" className="w-3 h-3"></i>
+            <Lock className="w-3 h-3" />
             Staked
           </p>
           <p className="font-sans text-3xl font-bold text-hydro mb-1">
@@ -164,7 +166,7 @@ const FinancialsTab = ({ address }: FinancialsTabProps) => {
 
         <div className="glass-card p-5 rounded-lg border border-yuzu/30">
           <p className="font-mono text-xs text-gray-400 mb-2 flex items-center gap-2">
-            <i data-lucide="trending-up" className="w-3 h-3"></i>
+            <TrendingUp className="w-3 h-3" />
             Total Earned
           </p>
           <p className="font-sans text-3xl font-bold text-yuzu mb-1">
@@ -182,7 +184,7 @@ const FinancialsTab = ({ address }: FinancialsTabProps) => {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-sans font-bold text-white mb-2 flex items-center gap-2">
-              <i data-lucide="download-cloud" className="w-5 h-5 text-success"></i>
+              <DownloadCloud className="w-5 h-5 text-success" />
               Claim Your Rewards
             </h3>
             <p className="font-mono text-sm text-gray-400">
@@ -195,7 +197,7 @@ const FinancialsTab = ({ address }: FinancialsTabProps) => {
             onClick={handleClaim}
             disabled={earnings.available === 0}
           >
-            <i data-lucide="download" className="w-5 h-5"></i>
+            <Download className="w-5 h-5" />
             Claim {formatPrice(earnings.available, "CAPY", 0)}
           </Button>
         </div>
@@ -205,7 +207,7 @@ const FinancialsTab = ({ address }: FinancialsTabProps) => {
       <div className="glass-card p-6 rounded-lg">
         <div className="flex items-center justify-between mb-6">
           <h3 className="font-sans font-bold text-white flex items-center gap-2">
-            <i data-lucide="bar-chart-2" className="w-5 h-5 text-yuzu"></i>
+            <BarChart2 className="w-5 h-5 text-yuzu" />
             Revenue Over Time
           </h3>
           <div className="flex items-center gap-2">
@@ -254,7 +256,7 @@ const FinancialsTab = ({ address }: FinancialsTabProps) => {
       {/* Transaction History */}
       <div className="glass-card p-6 rounded-lg">
         <h3 className="font-sans font-bold text-white mb-4 flex items-center gap-2">
-          <i data-lucide="list" className="w-5 h-5 text-yuzu"></i>
+          <List className="w-5 h-5 text-yuzu" />
           Recent Transactions
         </h3>
 
@@ -267,12 +269,9 @@ const FinancialsTab = ({ address }: FinancialsTabProps) => {
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <div
-                    className={`w-10 h-10 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0`}
+                    className={`w-10 h-10 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 ${getTransactionColor(tx.type)}`}
                   >
-                    <i
-                      data-lucide={getTransactionIcon(tx.type)}
-                      className={`w-5 h-5 ${getTransactionColor(tx.type)}`}
-                    ></i>
+                    {getTransactionIcon(tx.type)}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-mono text-sm text-white mb-1 truncate">
@@ -290,7 +289,7 @@ const FinancialsTab = ({ address }: FinancialsTabProps) => {
                         className="font-mono text-xs text-hydro hover:underline"
                       >
                         {tx.txHash.slice(0, 8)}...
-                        <i data-lucide="external-link" className="w-3 h-3 inline ml-1"></i>
+                        <ExternalLink className="w-3 h-3 inline ml-1" />
                       </a>
                     </div>
                   </div>
@@ -311,7 +310,7 @@ const FinancialsTab = ({ address }: FinancialsTabProps) => {
         <div className="mt-4 text-center">
           <button className="font-mono text-xs text-hydro hover:underline">
             View all transactions
-            <i data-lucide="arrow-right" className="w-3 h-3 inline ml-1"></i>
+            <ArrowRight className="w-3 h-3 inline ml-1" />
           </button>
         </div>
       </div>
@@ -319,7 +318,7 @@ const FinancialsTab = ({ address }: FinancialsTabProps) => {
       {/* Earning Tips */}
       <div className="glass-card p-6 rounded-lg border border-info/30">
         <div className="flex items-start gap-3">
-          <i data-lucide="lightbulb" className="w-5 h-5 text-info flex-shrink-0 mt-0.5"></i>
+          <Lightbulb className="w-5 h-5 text-info flex-shrink-0 mt-0.5" />
           <div>
             <p className="font-mono text-sm text-white mb-3 font-bold">
               Maximize Your Earnings
@@ -332,7 +331,7 @@ const FinancialsTab = ({ address }: FinancialsTabProps) => {
                 "Engage with the community to build reputation and visibility",
               ].map((tip, i) => (
                 <li key={i} className="flex items-start gap-2">
-                  <i data-lucide="check" className="w-3 h-3 text-success mt-0.5 flex-shrink-0"></i>
+                  <Check className="w-3 h-3 text-success mt-0.5 flex-shrink-0" />
                   <span className="font-mono text-xs text-gray-400 leading-relaxed">
                     {tip}
                   </span>

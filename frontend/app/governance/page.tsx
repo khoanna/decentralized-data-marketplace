@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Droplet, Users, TrendingUp, Vote, Sprout } from "lucide-react";
 import DataFarming from "@/components/Governance/DataFarming";
 import DAOVoting from "@/components/Governance/DAOVoting";
 
@@ -8,8 +9,8 @@ export default function GovernancePage() {
   const [activeTab, setActiveTab] = useState<"farming" | "voting">("farming");
 
   const tabs = [
-    { id: "farming" as const, label: "Data Farming", icon: "sprout" },
-    { id: "voting" as const, label: "DAO Voting", icon: "vote" },
+    { id: "farming" as const, label: "Data Farming", icon: <Sprout className="w-4 h-4" /> },
+    { id: "voting" as const, label: "DAO Voting", icon: <Vote className="w-4 h-4" /> },
   ];
 
   return (
@@ -30,7 +31,7 @@ export default function GovernancePage() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12 reveal delay-100">
           <div className="glass-card p-5 rounded-lg border border-grass/30">
             <p className="font-mono text-xs text-gray-400 mb-2 flex items-center gap-2">
-              <i data-lucide="droplet" className="w-3 h-3"></i>
+              <Droplet className="w-3 h-3" />
               Total Value Locked
             </p>
             <p className="font-sans text-2xl font-bold text-grass">
@@ -40,7 +41,7 @@ export default function GovernancePage() {
 
           <div className="glass-card p-5 rounded-lg border border-yuzu/30">
             <p className="font-mono text-xs text-gray-400 mb-2 flex items-center gap-2">
-              <i data-lucide="users" className="w-3 h-3"></i>
+              <Users className="w-3 h-3" />
               Active Stakers
             </p>
             <p className="font-sans text-2xl font-bold text-yuzu">
@@ -50,7 +51,7 @@ export default function GovernancePage() {
 
           <div className="glass-card p-5 rounded-lg border border-hydro/30">
             <p className="font-mono text-xs text-gray-400 mb-2 flex items-center gap-2">
-              <i data-lucide="trending-up" className="w-3 h-3"></i>
+              <TrendingUp className="w-3 h-3" />
               APY
             </p>
             <p className="font-sans text-2xl font-bold text-hydro">
@@ -60,7 +61,7 @@ export default function GovernancePage() {
 
           <div className="glass-card p-5 rounded-lg border border-success/30">
             <p className="font-mono text-xs text-gray-400 mb-2 flex items-center gap-2">
-              <i data-lucide="vote" className="w-3 h-3"></i>
+              <Vote className="w-3 h-3" />
               Active Proposals
             </p>
             <p className="font-sans text-2xl font-bold text-success">
@@ -83,7 +84,7 @@ export default function GovernancePage() {
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <i data-lucide={tab.icon} className="w-4 h-4"></i>
+                  {tab.icon}
                   {tab.label}
                 </div>
                 {activeTab === tab.id && (

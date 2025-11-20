@@ -4,6 +4,8 @@ import { PublishFormData } from "./PublishWizard";
 import { Input } from "@/components/Common/Input";
 import Badge from "@/components/Common/Badge";
 import { useState } from "react";
+import { Calendar, Check, Code, Cpu, Download, Eye, Globe, Inbox, Plus, Shield, ShieldCheck, UserCheck, X } from "lucide-react";
+
 
 interface AdvancedSettingsStepProps {
   formData: PublishFormData;
@@ -75,14 +77,7 @@ const AdvancedSettingsStep = ({ formData, updateFormData }: AdvancedSettingsStep
                 : "border-white/10 glass-input hover:border-yuzu/50"
             }`}
           >
-            <i
-              data-lucide="download"
-              className={`w-7 h-7 mb-3 transition-colors ${
-                formData.accessType === "download"
-                  ? "text-yuzu"
-                  : "text-gray-400 group-hover:text-yuzu"
-              }`}
-            ></i>
+            <Download  />
             <p
               className={`font-mono text-sm font-bold mb-2 transition-colors ${
                 formData.accessType === "download" ? "text-yuzu" : "text-white"
@@ -104,14 +99,7 @@ const AdvancedSettingsStep = ({ formData, updateFormData }: AdvancedSettingsStep
                 : "border-white/10 glass-input hover:border-yuzu/50"
             }`}
           >
-            <i
-              data-lucide="cpu"
-              className={`w-7 h-7 mb-3 transition-colors ${
-                formData.accessType === "compute"
-                  ? "text-yuzu"
-                  : "text-gray-400 group-hover:text-yuzu"
-              }`}
-            ></i>
+            <Cpu  />
             <p
               className={`font-mono text-sm font-bold mb-2 transition-colors ${
                 formData.accessType === "compute" ? "text-yuzu" : "text-white"
@@ -131,7 +119,7 @@ const AdvancedSettingsStep = ({ formData, updateFormData }: AdvancedSettingsStep
       {formData.accessType === "compute" && (
         <div className="glass-card p-6 rounded-lg border border-hydro/30 space-y-6">
           <div className="flex items-start gap-3">
-            <i data-lucide="shield-check" className="w-6 h-6 text-hydro flex-shrink-0"></i>
+            <ShieldCheck className="w-6 h-6 text-hydro flex-shrink-0" />
             <div>
               <h3 className="font-sans font-bold text-white mb-2">
                 Compute-to-Data Configuration
@@ -154,13 +142,13 @@ const AdvancedSettingsStep = ({ formData, updateFormData }: AdvancedSettingsStep
                 onChange={(e) => setAlgorithmInput(e.target.value)}
                 onKeyPress={(e) => handleKeyPress(e, handleAddAlgorithm)}
                 hint="Specify which algorithms can run on your data"
-                icon={<i data-lucide="code" className="w-4 h-4"></i>}
+                icon={<Code className="w-4 h-4" />}
               />
               <button
                 onClick={handleAddAlgorithm}
                 className="px-4 py-3 glass-input rounded-lg hover:border-yuzu/50 transition-all flex items-center gap-2 font-mono text-sm text-white flex-shrink-0"
               >
-                <i data-lucide="plus" className="w-4 h-4"></i>
+                <Plus className="w-4 h-4" />
                 Add
               </button>
             </div>
@@ -173,7 +161,7 @@ const AdvancedSettingsStep = ({ formData, updateFormData }: AdvancedSettingsStep
                     className="flex items-center justify-between p-3 glass-input rounded-lg"
                   >
                     <div className="flex items-center gap-2 flex-1 min-w-0">
-                      <i data-lucide="cpu" className="w-4 h-4 text-hydro flex-shrink-0"></i>
+                      <Cpu className="w-4 h-4 text-hydro flex-shrink-0" />
                       <span className="font-mono text-xs text-white truncate">
                         {did}
                       </span>
@@ -182,14 +170,14 @@ const AdvancedSettingsStep = ({ formData, updateFormData }: AdvancedSettingsStep
                       onClick={() => handleRemoveAlgorithm(did)}
                       className="ml-2 p-1 hover:bg-white/10 rounded transition-colors flex-shrink-0"
                     >
-                      <i data-lucide="x" className="w-4 h-4 text-gray-400"></i>
+                      <X className="w-4 h-4 text-gray-400" />
                     </button>
                   </div>
                 ))}
               </div>
             ) : (
               <div className="p-4 glass-input rounded-lg text-center">
-                <i data-lucide="inbox" className="w-8 h-8 text-gray-600 mx-auto mb-2"></i>
+                <Inbox className="w-8 h-8 text-gray-600 mx-auto mb-2" />
                 <p className="font-mono text-xs text-gray-500">
                   No algorithms whitelisted. Any algorithm can be used.
                 </p>
@@ -203,7 +191,7 @@ const AdvancedSettingsStep = ({ formData, updateFormData }: AdvancedSettingsStep
       <div className="glass-card p-5 rounded-lg">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-3 flex-1">
-            <i data-lucide="eye" className="w-5 h-5 text-grass mt-0.5"></i>
+            <Eye className="w-5 h-5 text-grass mt-0.5" />
             <div>
               <p className="font-mono text-sm text-white font-bold mb-1">
                 Provide Sample Data
@@ -245,13 +233,13 @@ const AdvancedSettingsStep = ({ formData, updateFormData }: AdvancedSettingsStep
             onChange={(e) => setAllowListInput(e.target.value)}
             onKeyPress={(e) => handleKeyPress(e, handleAddToAllowList)}
             hint="Only these addresses can purchase"
-            icon={<i data-lucide="user-check" className="w-4 h-4"></i>}
+            icon={<UserCheck className="w-4 h-4" />}
           />
           <button
             onClick={handleAddToAllowList}
             className="px-4 py-3 glass-input rounded-lg hover:border-yuzu/50 transition-all flex items-center gap-2 font-mono text-sm text-white flex-shrink-0"
           >
-            <i data-lucide="plus" className="w-4 h-4"></i>
+            <Plus className="w-4 h-4" />
             Add
           </button>
         </div>
@@ -265,14 +253,14 @@ const AdvancedSettingsStep = ({ formData, updateFormData }: AdvancedSettingsStep
                   onClick={() => handleRemoveFromAllowList(address)}
                   className="ml-2 hover:text-error transition-colors"
                 >
-                  <i data-lucide="x" className="w-3 h-3"></i>
+                  <X className="w-3 h-3" />
                 </button>
               </Badge>
             ))}
           </div>
         ) : (
           <div className="p-4 glass-input rounded-lg text-center">
-            <i data-lucide="globe" className="w-8 h-8 text-gray-600 mx-auto mb-2"></i>
+            <Globe className="w-8 h-8 text-gray-600 mx-auto mb-2" />
             <p className="font-mono text-xs text-gray-500">
               Public access - anyone can purchase
             </p>
@@ -290,14 +278,14 @@ const AdvancedSettingsStep = ({ formData, updateFormData }: AdvancedSettingsStep
           value={formData.expirationDate || ""}
           onChange={(e) => updateFormData({ expirationDate: e.target.value })}
           hint="Leave empty for permanent listing"
-          icon={<i data-lucide="calendar" className="w-4 h-4"></i>}
+          icon={<Calendar className="w-4 h-4" />}
         />
       </div>
 
       {/* Privacy & Security Notice */}
       <div className="p-4 glass-input rounded-lg border border-info/30">
         <div className="flex items-start gap-3">
-          <i data-lucide="shield" className="w-5 h-5 text-info mt-0.5"></i>
+          <Shield className="w-5 h-5 text-info mt-0.5" />
           <div>
             <p className="font-mono text-sm text-white mb-2 font-bold">
               Privacy & Security
@@ -310,7 +298,7 @@ const AdvancedSettingsStep = ({ formData, updateFormData }: AdvancedSettingsStep
                 "You can revoke access or update settings anytime",
               ].map((point, i) => (
                 <li key={i} className="flex items-start gap-2">
-                  <i data-lucide="check" className="w-3 h-3 text-success mt-0.5 flex-shrink-0"></i>
+                  <Check className="w-3 h-3 text-success mt-0.5 flex-shrink-0" />
                   <span className="font-mono text-xs text-gray-400 leading-relaxed">
                     {point}
                   </span>

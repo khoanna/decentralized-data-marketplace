@@ -1,4 +1,5 @@
 "use client";
+import { Check, Coins, Download, DownloadCloud, Gift, Info, Layers, Lock, MinusCircle, PlusCircle, TrendingUp } from "lucide-react";
 
 import { useState } from "react";
 import { formatPrice, capyToUSD, formatUSD } from "@/lib/utils";
@@ -105,7 +106,7 @@ const DataFarming = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="glass-card p-5 rounded-lg border border-grass/30">
           <p className="font-mono text-xs text-gray-400 mb-2 flex items-center gap-2">
-            <i data-lucide="lock" className="w-3 h-3"></i>
+            <Lock className="w-3 h-3" />
             Your Total Staked
           </p>
           <p className="font-sans text-3xl font-bold text-grass mb-1">
@@ -119,7 +120,7 @@ const DataFarming = () => {
 
         <div className="glass-card p-5 rounded-lg border border-yuzu/30">
           <p className="font-mono text-xs text-gray-400 mb-2 flex items-center gap-2">
-            <i data-lucide="gift" className="w-3 h-3"></i>
+            <Gift className="w-3 h-3" />
             Pending Rewards
           </p>
           <p className="font-sans text-3xl font-bold text-yuzu mb-1">
@@ -133,7 +134,7 @@ const DataFarming = () => {
 
         <div className="glass-card p-5 rounded-lg border border-hydro/30">
           <p className="font-mono text-xs text-gray-400 mb-2 flex items-center gap-2">
-            <i data-lucide="trending-up" className="w-3 h-3"></i>
+            <TrendingUp className="w-3 h-3" />
             Weighted APY
           </p>
           <p className="font-sans text-3xl font-bold text-hydro">
@@ -165,7 +166,7 @@ const DataFarming = () => {
               </p>
             </div>
             <Button variant="primary" size="lg" onClick={handleClaimAll}>
-              <i data-lucide="download-cloud" className="w-5 h-5"></i>
+              <DownloadCloud className="w-5 h-5" />
               Claim All
             </Button>
           </div>
@@ -175,7 +176,7 @@ const DataFarming = () => {
       {/* Staking Pools */}
       <div className="space-y-4">
         <h2 className="text-2xl font-sans font-bold text-white flex items-center gap-2">
-          <i data-lucide="layers" className="w-6 h-6 text-grass"></i>
+          <Layers className="w-6 h-6 text-grass" />
           Staking Pools
         </h2>
 
@@ -244,7 +245,7 @@ const DataFarming = () => {
                       value={stakeAmount}
                       onChange={(e) => setStakeAmount(e.target.value)}
                       hint="Enter CAPY amount"
-                      icon={<i data-lucide="coins" className="w-4 h-4"></i>}
+                      icon={<Coins className="w-4 h-4" />}
                     />
                     <div className="flex gap-2">
                       <Button
@@ -274,7 +275,7 @@ const DataFarming = () => {
                     onClick={() => setSelectedPool(pool.id)}
                     className="w-full"
                   >
-                    <i data-lucide="plus-circle" className="w-5 h-5"></i>
+                    <PlusCircle className="w-5 h-5" />
                     Stake CAPY
                   </Button>
                 )}
@@ -282,7 +283,7 @@ const DataFarming = () => {
                 {pool.yourStake > 0 && (
                   <>
                     <Button variant="ghost" size="lg" className="w-full">
-                      <i data-lucide="minus-circle" className="w-5 h-5"></i>
+                      <MinusCircle className="w-5 h-5" />
                       Unstake
                     </Button>
                     {pool.pendingRewards > 0 && (
@@ -292,7 +293,7 @@ const DataFarming = () => {
                         onClick={() => handleClaim(pool.id)}
                         className="w-full"
                       >
-                        <i data-lucide="download" className="w-5 h-5"></i>
+                        <Download className="w-5 h-5" />
                         Claim {pool.pendingRewards.toFixed(2)} CAPY
                       </Button>
                     )}
@@ -307,7 +308,7 @@ const DataFarming = () => {
       {/* How It Works */}
       <div className="glass-card p-6 rounded-lg border border-info/30">
         <div className="flex items-start gap-3">
-          <i data-lucide="info" className="w-5 h-5 text-info flex-shrink-0 mt-0.5"></i>
+          <Info className="w-5 h-5 text-info flex-shrink-0 mt-0.5" />
           <div>
             <h3 className="font-mono text-sm text-white mb-3 font-bold">
               How Data Farming Works
@@ -321,7 +322,7 @@ const DataFarming = () => {
                 "Early unstaking from locked pools may incur penalties",
               ].map((point, i) => (
                 <li key={i} className="flex items-start gap-2">
-                  <i data-lucide="check" className="w-3 h-3 text-success mt-0.5 flex-shrink-0"></i>
+                  <Check className="w-3 h-3 text-success mt-0.5 flex-shrink-0" />
                   <span className="font-mono text-xs text-gray-400 leading-relaxed">
                     {point}
                   </span>

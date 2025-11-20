@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Asset } from "@/lib/mockData";
-import { formatPrice, capyToUSD, formatUSD } from "@/lib/utils";
+import { TrendingUp } from "lucide-react";
+import { Asset } from "@/type/Item";
 import Badge from "@/components/Common/Badge";
 import Card from "@/components/Common/Card";
 
@@ -9,19 +9,17 @@ interface AssetCardProps {
 }
 
 const AssetCard = ({ asset }: AssetCardProps) => {
-  const chainColors: Record<string, string> = {
-    polygon: "text-purple-400",
-    ethereum: "text-blue-400",
-    bsc: "text-yellow-400",
-    moonriver: "text-teal-400",
-    sui: "text-cyan-400",
+  // Format price for display
+  const formatPrice = (price: number) => {
+    if (price === 0) return "FREE";
+    if (price >= 1000) return `${(price / 1000).toFixed(1)}K`;
+    return price.toString();
   };
 
-  const typeIcons: Record<string, string> = {
-    dataset: "database",
-    algorithm: "cpu",
-    stream: "radio",
-    storage: "hard-drive",
+  // Format sales number
+  const formatSales = (sales: number) => {
+    if (sales >= 1000) return `${(sales / 1000).toFixed(1)}K`;
+    return sales.toString();
   };
 
   return (
@@ -30,55 +28,27 @@ const AssetCard = ({ asset }: AssetCardProps) => {
         variant="glass"
         hover
         glow="yuzu"
-        className="p-0 overflow-hidden group reveal h-full flex flex-col"
+        className="p-5 group reveal h-full flex flex-col relative overflow-hidden"
       >
-        {/* Thumbnail */}
-        <div
-          className="relative w-full h-48 overflow-hidden bg-panel"
-        >
-          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all" />
-
-          {/* Type Badge */}
-          <div className="absolute top-3 left-3 z-10">
-            <Badge variant="type" size="sm">
-              <i data-lucide={typeIcons[asset.type]} className="w-3 h-3"></i>
-              {asset.type.toUpperCase()}
-            </Badge>
+        {/* Background Accent - Subtle gradient corner */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-yuzu/10 to-transparent rounded-bl-full opacity-50 group-hover:opacity-70 transition-opacity" />
+        
+        {/* Header Row - Price & Sales */}
+        <div className="flex items-start justify-between mb-3 relative z-10">
+          <Badge variant={asset.price === 0 ? "success" : "price"} size="sm">
+            {formatPrice(asset.price)} {asset.price > 0 && "CAPY"}
+          </Badge>
+          
+          <div className="flex items-center gap-1.5 px-2 py-1 bg-grass/10 rounded border border-grass/30">
+            <TrendingUp className="w-3 h-3 text-grass" />
+            <span className="font-mono text-xs text-grass font-bold">{formatSales(asset.amount_sold)}</span>
           </div>
-
-          {/* Chain Badge */}
-          <div className="absolute top-3 right-3 z-10">
-            <Badge variant="chain" size="sm">
-              <span className={`w-2 h-2 rounded-full ${chainColors[asset.chain]}`}></span>
-              {asset.chain.toUpperCase()}
-            </Badge>
-          </div>
-
-          {/* Featured Badge */}
-          {asset.featured && (
-            <div className="absolute bottom-3 left-3 z-10">
-              <Badge variant="success" size="sm">
-                <i data-lucide="star" className="w-3 h-3"></i>
-                FEATURED
-              </Badge>
-            </div>
-          )}
-
-          {/* C2D Badge */}
-          {asset.c2dEnabled && (
-            <div className="absolute bottom-3 right-3 z-10">
-              <Badge variant="info" size="sm">
-                <i data-lucide="shield-check" className="w-3 h-3"></i>
-                C2D
-              </Badge>
-            </div>
-          )}
         </div>
 
         {/* Content */}
-        <div className="p-4 flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col relative z-10">
           {/* Title */}
-          <h3 className="font-sans font-bold text-white text-lg mb-2 line-clamp-2 group-hover:text-yuzu transition-colors">
+          <h3 className="font-sans font-bold text-yuzu text-base mb-2 line-clamp-2 group-hover:text-yuzu/80 transition-colors min-h-12">
             {asset.title}
           </h3>
 
@@ -92,51 +62,27 @@ const AssetCard = ({ asset }: AssetCardProps) => {
             {asset.tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
-                className="px-2 py-0.5 bg-white/5 border border-white/10 rounded text-[10px] font-mono text-gray-500 hover:text-yuzu hover:border-yuzu/30 transition-all"
+                className="px-2 py-0.5 bg-white/5 border border-white/10 rounded text-[10px] font-mono text-gray-400 hover:text-yuzu hover:border-yuzu/50 transition-colors"
               >
                 {tag}
               </span>
             ))}
             {asset.tags.length > 3 && (
-              <span className="px-2 py-0.5 text-[10px] font-mono text-gray-500">
+              <span className="px-2 py-0.5 text-[10px] font-mono text-gray-600">
                 +{asset.tags.length - 3}
               </span>
             )}
           </div>
 
-          {/* Footer */}
-          <div className="flex items-center justify-between pt-4 border-t border-white/10">
-            {/* Price */}
-            <div>
-              {asset.priceModel === "free" ? (
-                <Badge variant="success" size="md">
-                  <i data-lucide="gift" className="w-3 h-3"></i>
-                  FREE
-                </Badge>
-              ) : (
-                <div>
-                  <Badge variant="price" size="md" className="text-white">
-                    {formatPrice(asset.price)}
-                  </Badge>
-                  <p className="font-mono text-[10px] text-gray-600 mt-1">
-                    ~{formatUSD(capyToUSD(asset.price))}
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Sales / TVL */}
-            <div className="text-right">
-              <p className="font-mono text-xs text-gray-400 flex items-center gap-1">
-                <i data-lucide="shopping-cart" className="w-3 h-3"></i>
-                {asset.sales} sales
-              </p>
-              {asset.tvl && (
-                <p className="font-mono text-[10px] text-gray-600">
-                  TVL: {formatUSD(asset.tvl)}
-                </p>
-              )}
-            </div>
+          {/* Footer - Release Date */}
+          <div className="flex items-center justify-between pt-3 border-t border-white/10">
+            <span className="font-mono text-xs text-gray-400">
+              {new Date(asset.release_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+            </span>
+            
+            <button className="px-3 py-1.5 bg-yuzu/10 hover:bg-yuzu text-yuzu hover:text-black border border-yuzu/30 hover:border-yuzu rounded font-mono text-xs font-bold transition-all">
+              VIEW
+            </button>
           </div>
         </div>
       </Card>

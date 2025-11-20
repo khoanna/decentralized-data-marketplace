@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { createIcons, icons } from "lucide";
 
 export default function CustomAnimations() {
   const pathname = usePathname();
@@ -13,9 +12,6 @@ export default function CustomAnimations() {
     
     // Small delay to ensure DOM is fully rendered after navigation
     const timeoutId = setTimeout(() => {
-      // Reinitialize Lucide icons for the new page
-      createIcons({ icons });
-
       // Create IntersectionObserver for scroll animations
       observer = new IntersectionObserver(
         (entries) => {
@@ -43,30 +39,20 @@ export default function CustomAnimations() {
 
       // Watch for new elements being added to the DOM (for filtering)
       mutationObserver = new MutationObserver((mutations) => {
-        let needsIconUpdate = false;
         let needsRevealUpdate = false;
 
         mutations.forEach((mutation) => {
           mutation.addedNodes.forEach((node) => {
             if (node.nodeType === Node.ELEMENT_NODE) {
               const element = node as Element;
-              // Check if new node has data-lucide icons
-              if (element.querySelector && element.querySelectorAll('[data-lucide]').length > 0) {
-                needsIconUpdate = true;
-              }
               // Check if new node has reveal elements
-              if (element.querySelector && element.querySelectorAll('.reveal').length > 0) {
+              if (element.querySelectorAll('.reveal').length > 0) {
                 needsRevealUpdate = true;
               }
             }
           });
         });
 
-        if (needsIconUpdate) {
-          requestAnimationFrame(() => {
-            createIcons({ icons });
-          });
-        }
         if (needsRevealUpdate) {
           requestAnimationFrame(() => {
             observeRevealElements();

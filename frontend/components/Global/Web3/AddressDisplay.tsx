@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Check, Copy } from "lucide-react";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { truncateAddress, copyToClipboard } from "@/lib/utils";
 import { useToast } from "@/hooks/useToast";
@@ -30,10 +31,11 @@ export function AddressDisplay() {
       <span className="font-mono text-xs text-white">
         {truncateAddress(account.address)}
       </span>
-      <i
-        data-lucide={copied ? "check" : "copy"}
-        className={`w-3 h-3 transition-all ${copied ? "text-success" : "text-gray-400 group-hover:text-yuzu"}`}
-      ></i>
+      {copied ? (
+        <Check className="w-3 h-3 text-success transition-all" />
+      ) : (
+        <Copy className="w-3 h-3 text-gray-400 group-hover:text-yuzu transition-all" />
+      )}
     </button>
   );
 }

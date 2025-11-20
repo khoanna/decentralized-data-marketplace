@@ -19,7 +19,7 @@ const Badge = ({
   variant = "status",
   size = "md",
   children,
-  className = "",
+  className = "text-yuzu",
 }: BadgeProps) => {
   const baseStyles =
     "font-mono font-bold inline-flex items-center gap-1.5 transition-all duration-300 whitespace-nowrap";

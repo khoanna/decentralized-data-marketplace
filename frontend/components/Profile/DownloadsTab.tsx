@@ -1,4 +1,5 @@
 "use client";
+import { Check, Clock, Download, ExternalLink, Eye, Inbox, Info, RotateCcw, Search } from "lucide-react";
 
 import { useState } from "react";
 import { mockAssets } from "@/lib/mockData";
@@ -134,7 +135,7 @@ const DownloadsTab = ({ address }: DownloadsTabProps) => {
                   {/* Download Stats */}
                   <div className="flex items-center gap-4 mb-3">
                     <div className="flex items-center gap-2">
-                      <i data-lucide="download" className="w-3 h-3 text-gray-500"></i>
+                      <Download className="w-3 h-3 text-gray-500" />
                       <span className="font-mono text-xs text-gray-500">
                         {download.downloadCount} download{download.downloadCount !== 1 ? "s" : ""}
                       </span>
@@ -143,7 +144,7 @@ const DownloadsTab = ({ address }: DownloadsTabProps) => {
                       <>
                         <span className="text-gray-600">•</span>
                         <div className="flex items-center gap-2">
-                          <i data-lucide="clock" className="w-3 h-3 text-gray-500"></i>
+                          <Clock className="w-3 h-3 text-gray-500" />
                           <span className="font-mono text-xs text-gray-500">
                             Last accessed {timeAgo(download.lastDownloaded)}
                           </span>
@@ -160,7 +161,7 @@ const DownloadsTab = ({ address }: DownloadsTabProps) => {
                     className="font-mono text-xs text-hydro hover:underline flex items-center gap-1"
                   >
                     TX: {download.txHash.slice(0, 10)}...{download.txHash.slice(-8)}
-                    <i data-lucide="external-link" className="w-3 h-3"></i>
+                    <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
 
@@ -169,19 +170,19 @@ const DownloadsTab = ({ address }: DownloadsTabProps) => {
                   {download.status === "active" ? (
                     <>
                       <Button variant="primary" size="sm">
-                        <i data-lucide="download" className="w-4 h-4"></i>
+                        <Download className="w-4 h-4" />
                         Download
                       </Button>
                       <Link href={`/item/${download.assetId}`}>
                         <Button variant="ghost" size="sm">
-                          <i data-lucide="eye" className="w-4 h-4"></i>
+                          <Eye className="w-4 h-4" />
                         </Button>
                       </Link>
                     </>
                   ) : (
                     <Link href={`/item/${download.assetId}`}>
                       <Button variant="outline" size="sm">
-                        <i data-lucide="rotate-ccw" className="w-4 h-4"></i>
+                        <RotateCcw className="w-4 h-4" />
                         Renew Access
                       </Button>
                     </Link>
@@ -193,7 +194,7 @@ const DownloadsTab = ({ address }: DownloadsTabProps) => {
         </div>
       ) : (
         <div className="glass-card p-16 rounded-lg text-center">
-          <i data-lucide="inbox" className="w-16 h-16 text-gray-600 mx-auto mb-4"></i>
+          <Inbox className="w-16 h-16 text-gray-600 mx-auto mb-4" />
           <h3 className="font-sans font-bold text-xl text-white mb-2">
             No {filter !== "all" ? filter : ""} Downloads
           </h3>
@@ -204,7 +205,7 @@ const DownloadsTab = ({ address }: DownloadsTabProps) => {
           </p>
           <Link href="/marketplace">
             <Button variant="primary" size="lg">
-              <i data-lucide="search" className="w-5 h-5"></i>
+              <Search className="w-5 h-5" />
               Browse Marketplace
             </Button>
           </Link>
@@ -215,7 +216,7 @@ const DownloadsTab = ({ address }: DownloadsTabProps) => {
       {filteredDownloads.length > 0 && (
         <div className="glass-card p-6 rounded-lg border border-info/30">
           <div className="flex items-start gap-3">
-            <i data-lucide="info" className="w-5 h-5 text-info flex-shrink-0 mt-0.5"></i>
+            <Info className="w-5 h-5 text-info flex-shrink-0 mt-0.5" />
             <div>
               <p className="font-mono text-sm text-white mb-2 font-bold">
                 Access & Storage
@@ -228,7 +229,7 @@ const DownloadsTab = ({ address }: DownloadsTabProps) => {
                   "Renew expired access by purchasing again",
                 ].map((point, i) => (
                   <li key={i} className="flex items-start gap-2">
-                    <i data-lucide="check" className="w-3 h-3 text-success mt-0.5 flex-shrink-0"></i>
+                    <Check className="w-3 h-3 text-success mt-0.5 flex-shrink-0" />
                     <span className="font-mono text-xs text-gray-400 leading-relaxed">
                       {point}
                     </span>

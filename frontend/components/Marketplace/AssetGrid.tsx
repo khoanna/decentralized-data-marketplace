@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { Asset } from "@/lib/mockData";
+import { useState, useRef, useEffect } from "react";
+import { Inbox } from "lucide-react";
+import { Asset } from "@/type/Item";
 import AssetCard from "./AssetCard";
 import SkeletonCard from "@/components/Common/SkeletonCard";
 
@@ -13,10 +14,8 @@ interface AssetGridProps {
 const AssetGrid = ({ assets, isLoading = false }: AssetGridProps) => {
   const gridRef = useRef<HTMLDivElement>(null);
 
-  // Make cards immediately visible when assets change (skip reveal animation for filters)
   useEffect(() => {
     if (gridRef.current) {
-      // Use requestAnimationFrame to ensure DOM is rendered
       requestAnimationFrame(() => {
         const revealElements = gridRef.current?.querySelectorAll('.reveal');
         revealElements?.forEach((el) => {
@@ -39,7 +38,7 @@ const AssetGrid = ({ assets, isLoading = false }: AssetGridProps) => {
   if (assets.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 glass-card rounded-xl">
-        <i data-lucide="inbox" className="w-16 h-16 text-gray-600 mb-4"></i>
+        <Inbox className="w-16 h-16 text-gray-600 mb-4" />
         <h3 className="font-sans text-xl font-bold text-gray-400 mb-2">
           No datasets found
         </h3>

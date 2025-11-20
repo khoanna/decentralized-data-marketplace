@@ -1,4 +1,5 @@
 import React from "react";
+import { Globe2, ArrowUpRight, BarChart2, MessageSquare } from "lucide-react";
 
 const TopDataset = () => {
   return (
@@ -33,7 +34,7 @@ const TopDataset = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-6 h-auto md:h-[600px] reveal delay-100">
           <div className="md:col-span-2 md:row-span-2 glass-panel p-8 rounded-2xl hover-capy transition-all duration-300 relative overflow-hidden group flex flex-col justify-between cursor-pointer">
             <div className="absolute -right-10 -top-10 opacity-10 group-hover:opacity-20 transition-opacity">
-              <i data-lucide="globe-2" className="w-64 h-64 text-hydro"></i>
+              <Globe2 className="w-64 h-64 text-hydro" />
             </div>
 
             <div className="relative z-10">
@@ -75,7 +76,7 @@ const TopDataset = () => {
                 </div>
                 <button className="h-12 px-6 rounded-lg bg-white text-black font-bold font-mono text-xs hover:bg-hydro hover:text-white transition-colors flex items-center gap-2">
                   VIEW DETAILS{" "}
-                  <i data-lucide="arrow-up-right" className="w-4 h-4"></i>
+                  <ArrowUpRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
@@ -85,7 +86,7 @@ const TopDataset = () => {
             <div className="absolute top-0 right-0 w-20 h-20 bg-yuzu/10 blur-2xl rounded-full"></div>
             <div className="flex justify-between items-start relative z-10">
               <div className="w-12 h-12 bg-yuzu/10 border border-yuzu/20 rounded-lg flex items-center justify-center text-yuzu">
-                <i data-lucide="bar-chart-2" className="w-6 h-6"></i>
+                <BarChart2 className="w-6 h-6" />
               </div>
               <span className="text-[10px] font-mono text-green-400 flex items-center gap-1 bg-green-900/20 px-2 py-1 rounded border border-green-900/30">
                 HOT
@@ -110,7 +111,7 @@ const TopDataset = () => {
             <div className="absolute top-0 right-0 w-20 h-20 bg-purple-500/10 blur-2xl rounded-full"></div>
             <div className="flex justify-between items-start relative z-10">
               <div className="w-12 h-12 bg-purple-500/10 border border-purple-500/20 rounded-lg flex items-center justify-center text-purple-400">
-                <i data-lucide="message-square" className="w-6 h-6"></i>
+                <MessageSquare className="w-6 h-6" />
               </div>
               <span className="text-[10px] font-mono text-gray-500">
                 POPULAR
@@ -134,7 +135,7 @@ const TopDataset = () => {
             <div className="absolute top-0 right-0 w-20 h-20 bg-purple-500/10 blur-2xl rounded-full"></div>
             <div className="flex justify-between items-start relative z-10">
               <div className="w-12 h-12 bg-purple-500/10 border border-purple-500/20 rounded-lg flex items-center justify-center text-purple-400">
-                <i data-lucide="message-square" className="w-6 h-6"></i>
+                <MessageSquare className="w-6 h-6" />
               </div>
               <span className="text-[10px] font-mono text-gray-500">
                 POPULAR
@@ -158,7 +159,7 @@ const TopDataset = () => {
             <div className="absolute top-0 right-0 w-20 h-20 bg-purple-500/10 blur-2xl rounded-full"></div>
             <div className="flex justify-between items-start relative z-10">
               <div className="w-12 h-12 bg-purple-500/10 border border-purple-500/20 rounded-lg flex items-center justify-center text-purple-400">
-                <i data-lucide="message-square" className="w-6 h-6"></i>
+                <MessageSquare className="w-6 h-6" />
               </div>
               <span className="text-[10px] font-mono text-gray-500">
                 POPULAR

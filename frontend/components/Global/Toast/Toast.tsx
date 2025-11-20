@@ -1,4 +1,5 @@
 "use client";
+import { CheckCircle2, AlertCircle, Clock, Info, ExternalLink, X } from "lucide-react";
 
 import React, { useEffect, useState } from "react";
 import { ToastType } from "./ToastProvider";
@@ -26,25 +27,25 @@ const Toast = ({ toast, onClose }: ToastProps) => {
       bgColor: "bg-success/10",
       borderColor: "border-success/30",
       textColor: "text-success",
-      icon: "check-circle-2",
+      icon: <CheckCircle2 className="w-5 h-5" />,
     },
     error: {
       bgColor: "bg-error/10",
       borderColor: "border-error/30",
       textColor: "text-error",
-      icon: "alert-circle",
+      icon: <AlertCircle className="w-5 h-5" />,
     },
     pending: {
       bgColor: "bg-pending/10",
       borderColor: "border-pending/30",
       textColor: "text-pending",
-      icon: "clock",
+      icon: <Clock className="w-5 h-5" />,
     },
     info: {
       bgColor: "bg-info/10",
       borderColor: "border-info/30",
       textColor: "text-info",
-      icon: "info",
+      icon: <Info className="w-5 h-5" />,
     },
   };
 
@@ -64,7 +65,7 @@ const Toast = ({ toast, onClose }: ToastProps) => {
       <div className="flex items-start gap-3">
         {/* Icon */}
         <div className={`${config.textColor} flex-shrink-0 mt-0.5`}>
-          <i data-lucide={config.icon} className="w-5 h-5"></i>
+          {config.icon}
         </div>
 
         {/* Content */}
@@ -79,7 +80,7 @@ const Toast = ({ toast, onClose }: ToastProps) => {
               className={`font-mono text-xs ${config.textColor} hover:underline flex items-center gap-1`}
             >
               View on Explorer
-              <i data-lucide="external-link" className="w-3 h-3"></i>
+              <ExternalLink className="w-3 h-3" />
             </a>
           )}
         </div>
@@ -90,7 +91,7 @@ const Toast = ({ toast, onClose }: ToastProps) => {
           className="text-gray-400 hover:text-white transition-colors flex-shrink-0"
           aria-label="Close notification"
         >
-          <i data-lucide="x" className="w-4 h-4"></i>
+          <X className="w-4 h-4" />
         </button>
       </div>
 

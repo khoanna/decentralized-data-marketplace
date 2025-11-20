@@ -1,3 +1,4 @@
+import { BookOpen, FileText, MessageCircle } from "lucide-react";
 import PublishWizard from "@/components/Publish/PublishWizard";
 
 export default function PublishPage() {
@@ -28,21 +29,21 @@ export default function PublishPage() {
               href="#"
               className="font-mono text-xs text-hydro hover:underline flex items-center gap-1"
             >
-              <i data-lucide="book-open" className="w-3 h-3"></i>
+              <BookOpen className="w-3 h-3" />
               Publishing Guide
             </a>
             <a
               href="#"
               className="font-mono text-xs text-hydro hover:underline flex items-center gap-1"
             >
-              <i data-lucide="file-text" className="w-3 h-3"></i>
+              <FileText className="w-3 h-3" />
               Data Standards
             </a>
             <a
               href="#"
               className="font-mono text-xs text-hydro hover:underline flex items-center gap-1"
             >
-              <i data-lucide="message-circle" className="w-3 h-3"></i>
+              <MessageCircle className="w-3 h-3" />
               Get Support
             </a>
           </div>

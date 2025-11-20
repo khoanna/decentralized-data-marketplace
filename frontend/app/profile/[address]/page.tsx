@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useState } from "react";
+import { UploadCloud, Download, TrendingUp } from "lucide-react";
 import IdentityHeader from "@/components/Profile/IdentityHeader";
 import PublishedTab from "@/components/Profile/PublishedTab";
 import DownloadsTab from "@/components/Profile/DownloadsTab";
@@ -15,9 +16,9 @@ export default function ProfilePage({
   const [activeTab, setActiveTab] = useState<"published" | "downloads" | "financials">("published");
 
   const tabs = [
-    { id: "published" as const, label: "Published", icon: "upload-cloud" },
-    { id: "downloads" as const, label: "Downloads", icon: "download" },
-    { id: "financials" as const, label: "Financials", icon: "trending-up" },
+    { id: "published" as const, label: "Published", icon: <UploadCloud className="w-4 h-4" /> },
+    { id: "downloads" as const, label: "Downloads", icon: <Download className="w-4 h-4" /> },
+    { id: "financials" as const, label: "Financials", icon: <TrendingUp className="w-4 h-4" /> },
   ];
 
   return (
@@ -40,7 +41,7 @@ export default function ProfilePage({
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <i data-lucide={tab.icon} className="w-4 h-4"></i>
+                  {tab.icon}
                   {tab.label}
                 </div>
                 {activeTab === tab.id && (

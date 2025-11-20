@@ -1,4 +1,5 @@
 "use client";
+import { Check, ChevronDown, ChevronUp, Clock, Inbox, Info, PlusCircle, Shield, ThumbsDown, ThumbsUp, Settings, Wallet, Zap, Box, CheckCircle, XCircle } from "lucide-react";
 
 import { useState } from "react";
 import { timeAgo } from "@/lib/utils";
@@ -135,13 +136,13 @@ const DAOVoting = () => {
   const getCategoryIcon = (category: Proposal["category"]) => {
     switch (category) {
       case "protocol":
-        return "settings";
+        return <Settings className="w-3 h-3" />;
       case "treasury":
-        return "wallet";
+        return <Wallet className="w-3 h-3" />;
       case "feature":
-        return "zap";
+        return <Zap className="w-3 h-3" />;
       case "other":
-        return "box";
+        return <Box className="w-3 h-3" />;
     }
   };
 
@@ -158,7 +159,7 @@ const DAOVoting = () => {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-sans font-bold text-white mb-2 flex items-center gap-2">
-              <i data-lucide="shield" className="w-5 h-5 text-grass"></i>
+              <Shield className="w-5 h-5 text-grass" />
               Your Voting Power
             </h3>
             <p className="font-mono text-sm text-gray-400">
@@ -235,10 +236,7 @@ const DAOVoting = () => {
                           {proposal.status}
                         </Badge>
                         <div className="flex items-center gap-1.5 text-gray-500">
-                          <i
-                            data-lucide={getCategoryIcon(proposal.category)}
-                            className="w-3 h-3"
-                          ></i>
+                          {getCategoryIcon(proposal.category)}
                           <span className="font-mono text-xs capitalize">
                             {proposal.category}
                           </span>
@@ -253,10 +251,11 @@ const DAOVoting = () => {
                         {timeAgo(proposal.startDate)}
                       </p>
                     </div>
-                    <i
-                      data-lucide={isExpanded ? "chevron-up" : "chevron-down"}
-                      className="w-5 h-5 text-gray-400"
-                    ></i>
+                    {isExpanded ? (
+                      <ChevronUp className="w-5 h-5 text-gray-400" />
+                    ) : (
+                      <ChevronDown className="w-5 h-5 text-gray-400" />
+                    )}
                   </div>
 
                   {/* Voting Progress */}
@@ -291,7 +290,7 @@ const DAOVoting = () => {
                   {/* Time Remaining */}
                   {proposal.status === "active" && (
                     <p className="font-mono text-xs text-gray-500 mt-3">
-                      <i data-lucide="clock" className="w-3 h-3 inline mr-1"></i>
+                      <Clock className="w-3 h-3 inline mr-1" />
                       Ends {timeAgo(proposal.endDate)}
                     </p>
                   )}
@@ -318,7 +317,7 @@ const DAOVoting = () => {
                           onClick={() => handleVote(proposal.id, "for")}
                           className="flex-1"
                         >
-                          <i data-lucide="thumbs-up" className="w-5 h-5"></i>
+                          <ThumbsUp className="w-5 h-5" />
                           Vote For
                         </Button>
                         <Button
@@ -327,7 +326,7 @@ const DAOVoting = () => {
                           onClick={() => handleVote(proposal.id, "against")}
                           className="flex-1"
                         >
-                          <i data-lucide="thumbs-down" className="w-5 h-5"></i>
+                          <ThumbsDown className="w-5 h-5" />
                           Vote Against
                         </Button>
                       </div>
@@ -343,19 +342,22 @@ const DAOVoting = () => {
                         }`}
                       >
                         <p className="font-mono text-sm text-white flex items-center gap-2">
-                          <i
-                            data-lucide={
-                              proposal.userVote === "for"
-                                ? "check-circle"
-                                : "x-circle"
-                            }
-                            className={`w-5 h-5 ${
+                          {proposal.userVote === "for" ? (
+                            <CheckCircle className="w-5 h-5 text-success" />
+                          ) : (
+                            <XCircle className="w-5 h-5 text-error" />
+                          )}
+                          You voted{" "}
+                          <span
+                            className={`font-bold ${
                               proposal.userVote === "for"
                                 ? "text-success"
                                 : "text-error"
                             }`}
-                          ></i>
-                          You voted {proposal.userVote} on this proposal
+                          >
+                            {proposal.userVote}
+                          </span>{" "}
+                          on this proposal
                         </p>
                       </div>
                     )}
@@ -367,7 +369,7 @@ const DAOVoting = () => {
         </div>
       ) : (
         <div className="glass-card p-16 rounded-lg text-center">
-          <i data-lucide="inbox" className="w-16 h-16 text-gray-600 mx-auto mb-4"></i>
+          <Inbox className="w-16 h-16 text-gray-600 mx-auto mb-4" />
           <h3 className="font-sans font-bold text-xl text-white mb-2">
             No {filter !== "all" ? filter : ""} Proposals
           </h3>
@@ -391,7 +393,7 @@ const DAOVoting = () => {
             </p>
           </div>
           <Button variant="primary" size="lg">
-            <i data-lucide="plus-circle" className="w-5 h-5"></i>
+            <PlusCircle className="w-5 h-5" />
             Create Proposal
           </Button>
         </div>
@@ -400,7 +402,7 @@ const DAOVoting = () => {
       {/* Governance Info */}
       <div className="glass-card p-6 rounded-lg border border-info/30">
         <div className="flex items-start gap-3">
-          <i data-lucide="info" className="w-5 h-5 text-info flex-shrink-0 mt-0.5"></i>
+          <Info className="w-5 h-5 text-info flex-shrink-0 mt-0.5" />
           <div>
             <h3 className="font-mono text-sm text-white mb-3 font-bold">
               About DAO Governance
@@ -414,7 +416,7 @@ const DAOVoting = () => {
                 "Passed proposals are implemented by the core team within 30 days",
               ].map((point, i) => (
                 <li key={i} className="flex items-start gap-2">
-                  <i data-lucide="check" className="w-3 h-3 text-success mt-0.5 flex-shrink-0"></i>
+                  <Check className="w-3 h-3 text-success mt-0.5 flex-shrink-0" />
                   <span className="font-mono text-xs text-gray-400 leading-relaxed">
                     {point}
                   </span>

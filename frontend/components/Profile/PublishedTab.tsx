@@ -1,4 +1,5 @@
 "use client";
+import { ArrowRight, BarChart, Inbox, Trophy, UploadCloud } from "lucide-react";
 
 import { useState } from "react";
 import { mockAssets } from "@/lib/mockData";
@@ -18,8 +19,8 @@ const PublishedTab = ({ address }: PublishedTabProps) => {
 
   const sortedAssets = [...publishedAssets].sort((a, b) => {
     if (sortBy === "recent") return b.id.localeCompare(a.id);
-    if (sortBy === "popular") return b.sales - a.sales;
-    if (sortBy === "revenue") return b.price * b.sales - a.price * a.sales;
+    if (sortBy === "popular") return b.amount_sold - a.amount_sold;
+    if (sortBy === "revenue") return b.price * b.amount_sold - a.price * a.amount_sold;
     return 0;
   });
 
@@ -59,7 +60,7 @@ const PublishedTab = ({ address }: PublishedTabProps) => {
         </div>
       ) : (
         <div className="glass-card p-16 rounded-lg text-center">
-          <i data-lucide="inbox" className="w-16 h-16 text-gray-600 mx-auto mb-4"></i>
+          <Inbox className="w-16 h-16 text-gray-600 mx-auto mb-4" />
           <h3 className="font-sans font-bold text-xl text-white mb-2">
             No Published Datasets
           </h3>
@@ -69,7 +70,7 @@ const PublishedTab = ({ address }: PublishedTabProps) => {
           </p>
           <Link href="/publish">
             <Button variant="primary" size="lg">
-              <i data-lucide="upload-cloud" className="w-5 h-5"></i>
+              <UploadCloud className="w-5 h-5" />
               Publish Dataset
             </Button>
           </Link>
@@ -80,21 +81,21 @@ const PublishedTab = ({ address }: PublishedTabProps) => {
       {publishedAssets.length > 0 && (
         <div className="glass-card p-6 rounded-lg">
           <h3 className="font-sans font-bold text-white mb-4 flex items-center gap-2">
-            <i data-lucide="bar-chart" className="w-5 h-5 text-yuzu"></i>
+            <BarChart className="w-5 h-5 text-yuzu" />
             Publishing Overview
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="p-4 glass-input rounded-lg">
               <p className="font-mono text-xs text-gray-400 mb-1">Total Sales</p>
               <p className="font-sans text-2xl font-bold text-white">
-                {publishedAssets.reduce((sum, asset) => sum + asset.sales, 0)}
+                {publishedAssets.reduce((sum, asset) => sum + asset.amount_sold, 0)}
               </p>
             </div>
             <div className="p-4 glass-input rounded-lg">
               <p className="font-mono text-xs text-gray-400 mb-1">Total Revenue</p>
               <p className="font-sans text-2xl font-bold text-yuzu">
                 {publishedAssets
-                  .reduce((sum, asset) => sum + asset.price * asset.sales, 0)
+                  .reduce((sum, asset) => sum + asset.price * asset.amount_sold, 0)
                   .toLocaleString()}
                 <span className="text-sm ml-1">CAPY</span>
               </p>
@@ -123,7 +124,7 @@ const PublishedTab = ({ address }: PublishedTabProps) => {
       {publishedAssets.length > 0 && (
         <div className="glass-card p-6 rounded-lg border border-yuzu/30">
           <h3 className="font-sans font-bold text-white mb-4 flex items-center gap-2">
-            <i data-lucide="trophy" className="w-5 h-5 text-yuzu"></i>
+            <Trophy className="w-5 h-5 text-yuzu" />
             Top Performing Dataset
           </h3>
           <div className="flex items-center justify-between">
@@ -132,13 +133,13 @@ const PublishedTab = ({ address }: PublishedTabProps) => {
                 {sortedAssets[0].title}
               </p>
               <p className="font-mono text-xs text-gray-400">
-                {sortedAssets[0].sales} sales • {sortedAssets[0].price * sortedAssets[0].sales} CAPY revenue
+                {sortedAssets[0].amount_sold} sales • {sortedAssets[0].price * sortedAssets[0].amount_sold} CAPY revenue
               </p>
             </div>
             <Link href={`/item/${sortedAssets[0].id}`}>
               <Button variant="outline" size="sm">
                 View Details
-                <i data-lucide="arrow-right" className="w-4 h-4"></i>
+                <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
           </div>
