@@ -6,6 +6,9 @@ import { notFound } from "next/navigation";
 import SimpleAssetHeader from "@/components/ItemDetail/SimpleAssetHeader";
 import Link from "next/link";
 import { useAppContext } from "@/context/AppContext";
+import useMarketplace from "@/hooks/useMarketplace";
+import { useCurrentAccount } from "@mysten/dapp-kit";
+import { useToast } from "@/hooks/useToast";
 
 export default function ItemDetailPage({
   params,
@@ -13,7 +16,10 @@ export default function ItemDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const { allListings, appLoading } = useAppContext();
+  const { allListings, appLoading, userDatasets } = useAppContext();
+  const { buyDataset, loading } = useMarketplace();
+  const currentAccount = useCurrentAccount();
+  const { addToast } = useToast();
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
 
   // Find the asset by ID from real data
@@ -40,8 +46,40 @@ export default function ItemDetailPage({
     notFound();
   }
 
-  const handlePurchase = () => {
-    setShowPurchaseModal(true);
+  // Check if current user is the owner
+  const isOwner = currentAccount?.address === asset.owner;
+  
+  // Check if user has already purchased this dataset
+  const hasPurchased = userDatasets?.includes(id) || false;
+
+  const handlePurchase = async () => {
+    if (!currentAccount) {
+      addToast("Please connect your wallet first", "error");
+      return;
+    }
+
+    if (isOwner) {
+      addToast("You cannot purchase your own dataset", "error");
+      return;
+    }
+
+    if (hasPurchased) {
+      addToast("You have already purchased this dataset", "error");
+      return;
+    }
+
+    try {
+      addToast("Processing purchase...", "info");
+      await buyDataset(asset);
+      addToast("Dataset purchased successfully!", "success");
+      setShowPurchaseModal(false);
+    } catch (error) {
+      console.error("Purchase error:", error);
+      addToast(
+        `Purchase failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+        "error"
+      );
+    }
   };
 
   return (
@@ -63,7 +101,13 @@ export default function ItemDetailPage({
         {/* Main Content */}
         <div className="space-y-8">
           {/* Asset Header */}
-          <SimpleAssetHeader asset={asset} onPurchase={handlePurchase} />
+          <SimpleAssetHeader 
+            asset={asset} 
+            onPurchase={!isOwner && !hasPurchased ? handlePurchase : undefined}
+            loading={loading}
+            isOwner={isOwner}
+            hasPurchased={hasPurchased}
+          />
 
           {/* Description Section */}
           <div className="glass-card p-8 rounded-xl reveal delay-100">

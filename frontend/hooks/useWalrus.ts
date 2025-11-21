@@ -5,8 +5,9 @@ import {
   useSignAndExecuteTransaction,
   useSuiClient,
 } from "@mysten/dapp-kit";
-import { useEffect, useState } from "react";
-import type { WalrusClient } from "@mysten/walrus";
+import {useEffect, useState} from "react";
+import type {WalrusClient} from "@mysten/walrus";
+import {log} from "console";
 
 type WalrusModule = typeof import("@mysten/walrus");
 type ExtendedSuiClient = ReturnType<typeof useSuiClient> & {
@@ -20,7 +21,8 @@ export default function useWalrus() {
   const suiClientBase = useSuiClient();
   const [suiClient, setSuiClient] = useState<ExtendedSuiClient | null>(null);
   const address = useCurrentAccount()?.address || "";
-  const { mutateAsync: signAndExecuteTransaction } = useSignAndExecuteTransaction();
+  const {mutateAsync: signAndExecuteTransaction} =
+    useSignAndExecuteTransaction();
 
   useEffect(() => {
     if (typeof window !== "undefined" && !walrusModule) {
@@ -56,33 +58,30 @@ export default function useWalrus() {
   }, [suiClientBase, suiClient]);
 
   const uploadFileToWalrus = async (
-    decryptedBytes: Uint8Array,
+    encryptedBytes: Uint8Array,
     fileName: string
   ): Promise<string> => {
     if (!isReady || !suiClient || !walrusModule) {
       throw new Error("Walrus SDK not ready yet");
     }
 
-    const flow = suiClient.walrus.writeFilesFlow({
-      files: [
-        walrusModule.WalrusFile.from({
-          contents: decryptedBytes,
-          identifier: fileName,
-        }),
-      ],
+    const flow = suiClient.walrus.writeBlobFlow({
+      blob: encryptedBytes,
     });
+
     await flow.encode();
     const registerTx = flow.register({
       epochs: 1,
       owner: address,
       deletable: true,
     });
-    const { digest } = await signAndExecuteTransaction({ transaction: registerTx });
-    await flow.upload({ digest });
+
+    const {digest} = await signAndExecuteTransaction({transaction: registerTx});
+    await flow.upload({digest});
     const certifyTx = flow.certify();
-    await signAndExecuteTransaction({ transaction: certifyTx });
-    const files = await flow.listFiles();
-    return files[0].blobId;
+    await signAndExecuteTransaction({transaction: certifyTx});
+    const blobResult = await flow.getBlob();
+    return blobResult.blobId;
   };
 
   const fetchBlobFromWalrus = async (blobId: string): Promise<Uint8Array> => {
@@ -90,9 +89,10 @@ export default function useWalrus() {
       throw new Error("Walrus SDK not ready yet");
     }
 
-    const [file] = await suiClient.walrus.getFiles({ ids: [blobId] });
-    const bytes = await file.bytes();
-    return bytes;
+    const fileData = await suiClient.walrus.readBlob({blobId});
+    console.log("Walrus File", fileData);
+
+    return fileData;
   };
 
   return {

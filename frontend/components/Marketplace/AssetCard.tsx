@@ -11,7 +11,7 @@ interface AssetCardProps {
 const AssetCard = ({ asset }: AssetCardProps) => {
   // Format price for display
   const formatPrice = (price: number) => {
-    if (price === 0) return "FREE";
+    if (price == 0) return "FREE";
     if (price >= 1000) return `${(price / 1000).toFixed(1)}K`;
     return price.toString();
   };

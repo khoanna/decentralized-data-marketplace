@@ -1,6 +1,6 @@
 "use client";
 
-import { ShoppingCart, TrendingUp, Calendar, Tag } from "lucide-react";
+import { ShoppingCart, TrendingUp, Calendar, Tag, Sparkles, Check } from "lucide-react";
 import { Asset } from "@/type/Item";
 import Badge from "@/components/Common/Badge";
 import Button from "@/components/Common/Button";
@@ -20,9 +20,12 @@ const formatDate = (timestamp: number | string): string => {
 interface SimpleAssetHeaderProps {
   asset: Asset;
   onPurchase?: () => void;
+  loading?: boolean;
+  isOwner?: boolean;
+  hasPurchased?: boolean;
 }
 
-export default function SimpleAssetHeader({ asset, onPurchase }: SimpleAssetHeaderProps) {
+export default function SimpleAssetHeader({ asset, onPurchase, loading, isOwner, hasPurchased }: SimpleAssetHeaderProps) {
   return (
     <div className="glass-card p-8 rounded-xl reveal">
       {/* Title and Price */}
@@ -41,16 +44,40 @@ export default function SimpleAssetHeader({ asset, onPurchase }: SimpleAssetHead
           <p className="text-3xl font-sans font-bold text-yuzu mb-4">
             {formatPrice(asset.price)}
           </p>
-          {onPurchase && (
+          {isOwner ? (
+            <div className="glass-card p-4 rounded-lg border border-grass/30 bg-grass/5">
+              <p className="font-mono text-sm text-grass flex items-center gap-2">
+                <Sparkles className="w-4 h-4" />
+                You own this dataset
+              </p>
+            </div>
+          ) : hasPurchased ? (
+            <div className="glass-card p-4 rounded-lg border border-hydro/30 bg-hydro/5">
+              <p className="font-mono text-sm text-hydro flex items-center gap-2">
+                <Check className="w-4 h-4" />
+                Already purchased
+              </p>
+            </div>
+          ) : onPurchase ? (
             <Button
               onClick={onPurchase}
               variant="primary"
               className="w-full lg:w-auto"
+              disabled={loading}
             >
-              <ShoppingCart className="w-4 h-4" />
-              Purchase Dataset
+              {loading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <ShoppingCart className="w-4 h-4" />
+                  Purchase Dataset
+                </>
+              )}
             </Button>
-          )}
+          ) : null}
         </div>
       </div>
 

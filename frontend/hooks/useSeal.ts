@@ -1,6 +1,6 @@
 "use client";
 
-import {PACKAGE_ID, SERVER_OBJECT_ID} from "@/lib/constants";
+import {MARKETPLACE_ID, PACKAGE_ID, SERVER_OBJECT_ID} from "@/lib/constants";
 import {
   useCurrentAccount,
   useCurrentWallet,
@@ -33,15 +33,22 @@ export default function useSeal() {
   async function encrypt(input: Uint8Array) {
     const {encryptedObject: encryptedBytes, key: backupKey} =
       await sealClient.encrypt({
-        id: PACKAGE_ID,
+        id: MARKETPLACE_ID,
         packageId: PACKAGE_ID,
         data: input,
         threshold: 2,
       });
+      
     return encryptedBytes;
   }
 
-  async function decrypt(encryptedBytes: Uint8Array) {
+  async function decrypt(
+    encryptedBytes: Uint8Array,
+    datasetId: string,
+    nftId: string
+  ) {
+    console.log(encryptedBytes);
+    
     const sessionKey = await SessionKey.create({
       address: address,
       packageId: PACKAGE_ID,
@@ -68,12 +75,11 @@ export default function useSeal() {
     tx.moveCall({
       target: `${PACKAGE_ID}::access::seal_approve`,
       arguments: [
-        tx.pure.vector("u8", Array.from(fromHex(PACKAGE_ID))),
-        tx.object(PACKAGE_ID),
+        tx.pure.vector("u8", Array.from(fromHex(MARKETPLACE_ID))),
+        tx.object(datasetId),
+        tx.object(nftId),
       ],
     });
-
-    await signAndExecuteTransaction({transaction: tx});
 
     const txBytes = await tx.build({
       client: suiClient,

@@ -23,6 +23,8 @@ import AssetLocationStep from "./AssetLocationStep";
 import PricingStep from "./PricingStep";
 import ReviewStep from "./ReviewStep";
 import DeployProgress from "./DeployProgress";
+import { useAppContext } from "@/context/AppContext";
+import { suiToMist } from "@/lib/utils";
 
 export interface PublishFormData {
   // Metadata
@@ -55,6 +57,7 @@ const INITIAL_FORM_DATA: PublishFormData = {
 };
 
 const PublishWizard = () => {
+  const { fetchListings } = useAppContext();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<PublishFormData>(INITIAL_FORM_DATA);
   const [isDeploying, setIsDeploying] = useState(false);
@@ -116,16 +119,7 @@ const PublishWizard = () => {
     
     try {
       addToast("Encrypting and uploading file to Walrus network...", "info");
-      
-      // uploadFile now handles:
-      // 1. Encrypting the file
-      // 2. Uploading to Walrus
-      // 3. Creating transaction
-      // 4. Signing and executing transaction
-      // 5. Waiting for transaction confirmation
-      
-      // Note: Move contract requires price > 0, so we use 1 for free datasets
-      const actualPrice = formData.pricingModel === "free" ? 1 : formData.price;
+      const actualPrice = formData.pricingModel === "free" ? 0 : formData.price;
       
       const result = await uploadFile(
         formData.uploadedFile,
@@ -134,10 +128,9 @@ const PublishWizard = () => {
         formData.filetype,
         formData.description,
         formData.tags,
-        actualPrice,
-        formData.releaseDate || Date.now()
+        suiToMist(actualPrice)
       );
-      
+      await fetchListings();
       setTxResult(result);
       addToast("Dataset published successfully!", "success");
       

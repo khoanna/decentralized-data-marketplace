@@ -101,7 +101,7 @@ module contract::marketplace {
         // marketplace.on_sale.push_back(object::uid_to_address(dataset.id));
         marketplace.on_sale.push_back(object::id(&dataset));
         let _id = object::id(&dataset);
-        transfer::public_transfer(dataset, ctx.sender());
+        transfer::share_object(dataset);
         emit(DatasetListed{
             dataset_id: _id
         });

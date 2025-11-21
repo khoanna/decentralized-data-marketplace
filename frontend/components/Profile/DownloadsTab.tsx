@@ -2,51 +2,60 @@
 import { Check, Clock, Download, ExternalLink, Eye, Inbox, Info, RotateCcw, Search } from "lucide-react";
 
 import { useState } from "react";
-import { mockAssets } from "@/lib/mockData";
 import { formatPrice, timeAgo } from "@/lib/utils";
 import Badge from "@/components/Common/Badge";
 import Button from "@/components/Common/Button";
 import Link from "next/link";
+import { useAppContext } from "@/context/AppContext";
+import { useCurrentAccount } from "@mysten/dapp-kit";
+import type { Asset } from "@/type/Item";
+import useMarketplace from "@/hooks/useMarketplace";
 
 interface DownloadsTabProps {
   address: string;
 }
 
-interface Download {
-  id: string;
-  assetId: string;
-  assetTitle: string;
-  purchaseDate: Date;
-  price: number;
-  txHash: string;
-  downloadCount: number;
-  lastDownloaded?: Date;
-  status: "active" | "expired";
-}
-
 const DownloadsTab = ({ address }: DownloadsTabProps) => {
-  const [filter, setFilter] = useState<"all" | "active" | "expired">("all");
+  const [filter, setFilter] = useState<"all" | "active">("all");
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const { allListings, userDatasets } = useAppContext();
+  const {getFile} = useMarketplace();
+  const currentAccount = useCurrentAccount();
 
-  // Mock user's downloads
-  const mockDownloads: Download[] = mockAssets.slice(0, 5).map((asset, i) => ({
-    id: `download-${i}`,
-    assetId: asset.id,
-    assetTitle: asset.title,
-    purchaseDate: new Date(Date.now() - i * 86400000 * 7),
-    price: asset.price,
-    txHash: `0x${Math.random().toString(36).substring(2, 15)}`,
-    downloadCount: Math.floor(Math.random() * 10) + 1,
-    lastDownloaded: new Date(Date.now() - i * 86400000),
-    status: i > 3 ? "expired" : "active",
-  }));
+  const isOwnProfile = currentAccount?.address === address;
 
-  const filteredDownloads = mockDownloads.filter((d) => {
+  const purchasedAssets: Asset[] = isOwnProfile && userDatasets
+    ? allListings?.filter(asset => userDatasets.includes(asset.id.id)) || []
+    : [];
+
+  const filteredDownloads = purchasedAssets.filter((asset) => {
     if (filter === "all") return true;
-    return d.status === filter;
+    return asset.on_listed; 
   });
 
-  const totalSpent = mockDownloads.reduce((sum, d) => sum + d.price, 0);
-  const activeAccess = mockDownloads.filter((d) => d.status === "active").length;
+  const totalSpent = purchasedAssets.reduce((sum, asset) => sum + asset.price, 0);
+  const activeAccess = purchasedAssets.filter((asset) => asset.on_listed).length;
+
+  const handleDownload = async (asset: Asset) => {
+    setDownloadingId(asset.id.id);
+    try {
+      const file = await getFile(asset.blob_id, asset.filename, asset.filetype, asset.id.id);
+      
+      const url = URL.createObjectURL(file);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = asset.filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      alert('Failed to download file. Please try again.');
+    } finally {
+      setDownloadingId(null);
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -55,7 +64,7 @@ const DownloadsTab = ({ address }: DownloadsTabProps) => {
         <div className="glass-card p-5 rounded-lg">
           <p className="font-mono text-xs text-gray-400 mb-2">Total Purchased</p>
           <p className="font-sans text-3xl font-bold text-white">
-            {mockDownloads.length}
+            {purchasedAssets.length}
           </p>
         </div>
         <div className="glass-card p-5 rounded-lg">
@@ -68,7 +77,7 @@ const DownloadsTab = ({ address }: DownloadsTabProps) => {
           <p className="font-mono text-xs text-gray-400 mb-2">Total Spent</p>
           <p className="font-sans text-3xl font-bold text-yuzu">
             {totalSpent.toLocaleString()}
-            <span className="text-sm ml-1">CAPY</span>
+            <span className="text-sm ml-1">SUI</span>
           </p>
         </div>
       </div>
@@ -76,13 +85,8 @@ const DownloadsTab = ({ address }: DownloadsTabProps) => {
       {/* Filter Tabs */}
       <div className="flex items-center gap-2">
         {[
-          { value: "all" as const, label: "All", count: mockDownloads.length },
+          { value: "all" as const, label: "All", count: purchasedAssets.length },
           { value: "active" as const, label: "Active", count: activeAccess },
-          {
-            value: "expired" as const,
-            label: "Expired",
-            count: mockDownloads.length - activeAccess,
-          },
         ].map((tab) => (
           <button
             key={tab.value}
@@ -99,11 +103,21 @@ const DownloadsTab = ({ address }: DownloadsTabProps) => {
       </div>
 
       {/* Downloads List */}
-      {filteredDownloads.length > 0 ? (
+      {!isOwnProfile ? (
+        <div className="glass-card p-16 rounded-lg text-center">
+          <Inbox className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+          <h3 className="font-sans font-bold text-xl text-white mb-2">
+            Private Information
+          </h3>
+          <p className="font-mono text-sm text-gray-400">
+            Purchase history is only visible to the account owner.
+          </p>
+        </div>
+      ) : filteredDownloads.length > 0 ? (
         <div className="space-y-4">
-          {filteredDownloads.map((download) => (
+          {filteredDownloads.map((asset) => (
             <div
-              key={download.id}
+              key={asset.id.id}
               className="glass-card p-6 rounded-lg hover:border-yuzu/30 transition-all"
             >
               <div className="flex items-start gap-4">
@@ -112,81 +126,47 @@ const DownloadsTab = ({ address }: DownloadsTabProps) => {
                   <div className="flex items-start justify-between gap-4 mb-3">
                     <div className="flex-1">
                       <h3 className="font-mono text-sm font-bold text-white mb-1">
-                        {download.assetTitle}
+                        {asset.title}
                       </h3>
                       <div className="flex items-center gap-3 text-xs">
                         <span className="font-mono text-gray-400">
-                          Purchased {timeAgo(download.purchaseDate)}
+                          Price: {formatPrice(asset.price)}
                         </span>
                         <span className="text-gray-600">•</span>
                         <span className="font-mono text-gray-400">
-                          {formatPrice(download.price)}
+                          {asset.filetype.toUpperCase()}
                         </span>
                       </div>
                     </div>
                     <Badge
-                      variant={download.status === "active" ? "success" : "error"}
+                      variant={asset.on_listed ? "success" : "error"}
                       size="sm"
                     >
-                      {download.status === "active" ? "Active" : "Expired"}
+                      {asset.on_listed ? "Active" : "Unlisted"}
                     </Badge>
                   </div>
 
-                  {/* Download Stats */}
-                  <div className="flex items-center gap-4 mb-3">
-                    <div className="flex items-center gap-2">
-                      <Download className="w-3 h-3 text-gray-500" />
-                      <span className="font-mono text-xs text-gray-500">
-                        {download.downloadCount} download{download.downloadCount !== 1 ? "s" : ""}
-                      </span>
-                    </div>
-                    {download.lastDownloaded && (
-                      <>
-                        <span className="text-gray-600">•</span>
-                        <div className="flex items-center gap-2">
-                          <Clock className="w-3 h-3 text-gray-500" />
-                          <span className="font-mono text-xs text-gray-500">
-                            Last accessed {timeAgo(download.lastDownloaded)}
-                          </span>
-                        </div>
-                      </>
-                    )}
+                  {/* Asset Tags */}
+                  <div className="flex items-center gap-2 mb-3 flex-wrap">
+                    {asset.tags.slice(0, 3).map((tag) => (
+                      <Badge key={tag} variant="type" size="sm">
+                        {tag}
+                      </Badge>
+                    ))}
                   </div>
-
-                  {/* Transaction Hash */}
-                  <a
-                    href={`https://suiscan.xyz/testnet/tx/${download.txHash}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-mono text-xs text-hydro hover:underline flex items-center gap-1"
-                  >
-                    TX: {download.txHash.slice(0, 10)}...{download.txHash.slice(-8)}
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  {download.status === "active" ? (
-                    <>
-                      <Button variant="primary" size="sm">
-                        <Download className="w-4 h-4" />
-                        Download
-                      </Button>
-                      <Link href={`/item/${download.assetId}`}>
-                        <Button variant="ghost" size="sm">
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                      </Link>
-                    </>
-                  ) : (
-                    <Link href={`/item/${download.assetId}`}>
-                      <Button variant="outline" size="sm">
-                        <RotateCcw className="w-4 h-4" />
-                        Renew Access
-                      </Button>
-                    </Link>
-                  )}
+                <div className="flex items-center gap-2 shrink-0">
+                    <Button 
+                      variant="primary" 
+                      size="sm" 
+                      onClick={() => handleDownload(asset)}
+                      disabled={downloadingId === asset.id.id}
+                    >
+                      <Download className="w-4 h-4" />
+                      {downloadingId === asset.id.id ? 'Downloading...' : 'Download'}
+                    </Button>
                 </div>
               </div>
             </div>
@@ -216,20 +196,20 @@ const DownloadsTab = ({ address }: DownloadsTabProps) => {
       {filteredDownloads.length > 0 && (
         <div className="glass-card p-6 rounded-lg border border-info/30">
           <div className="flex items-start gap-3">
-            <Info className="w-5 h-5 text-info flex-shrink-0 mt-0.5" />
+            <Info className="w-5 h-5 text-info shrink-0 mt-0.5" />
             <div>
               <p className="font-mono text-sm text-white mb-2 font-bold">
                 Access & Storage
               </p>
               <ul className="space-y-1">
                 {[
-                  "Your access tokens are stored in your wallet",
-                  "Download datasets anytime while access is active",
-                  "Access may expire based on the seller's terms",
-                  "Renew expired access by purchasing again",
+                  "Your access tokens (NFTs) are stored in your wallet",
+                  "You can view purchased datasets anytime",
+                  "Access status depends on whether the dataset is still listed",
+                  "Datasets may be unlisted by the owner",
                 ].map((point, i) => (
                   <li key={i} className="flex items-start gap-2">
-                    <Check className="w-3 h-3 text-success mt-0.5 flex-shrink-0" />
+                    <Check className="w-3 h-3 text-success mt-0.5 shrink-0" />
                     <span className="font-mono text-xs text-gray-400 leading-relaxed">
                       {point}
                     </span>

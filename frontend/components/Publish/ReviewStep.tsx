@@ -160,7 +160,7 @@ const ReviewStep = ({ formData }: ReviewStepProps) => {
       {/* Warning */}
       <div className="p-4 glass-input rounded-lg border border-info/30">
         <div className="flex items-start gap-3">
-          <div className="w-6 h-6 rounded-full bg-info/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <div className="w-6 h-6 rounded-full bg-info/20 flex items-center justify-center shrink-0 mt-0.5">
             <span className="text-info font-bold text-xs">!</span>
           </div>
           <div>

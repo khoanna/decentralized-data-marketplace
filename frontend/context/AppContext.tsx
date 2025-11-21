@@ -3,33 +3,58 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
 import type {Asset} from "@/type/Item";
 import useMarketplace from "@/hooks/useMarketplace";
+import { useCurrentAccount } from "@mysten/dapp-kit";
 
 interface AppContext {
   allListings: Asset[] | undefined;
   appLoading: boolean;
+  userDatasets: string[] | undefined;
+  fetchListings: () => Promise<void>;
 }
 
 const appContext = createContext<AppContext | undefined>(undefined);
 
 export const AppContextProvider = ({children}: {children: React.ReactNode}) => {
   const [allListings, setAllListings] = useState<Asset[] | undefined>(undefined);
+  const [userDatasets, setUserDatasets] = useState<string[] | undefined>(undefined);
   const [appLoading, setAppLoading] = useState(false);
-  const {getAllListings} = useMarketplace();
+  const {getAllListings, getUserDatasets} = useMarketplace();
+  const currentAccount = useCurrentAccount();
 
   const fetchListings = async () => {
     setAppLoading(true);
     const listings = await getAllListings();
     setAllListings(listings);
+    
+    if (currentAccount?.address) {
+      await getUserDatasets();
+    }
+    
     setAppLoading(false);
+  };
+
+  const fetchUserDatasets = async () => {
+    if (currentAccount?.address) {
+      const datasets = await getUserDatasets();
+      console.log(datasets);
+      
+      setUserDatasets(datasets);
+    }
   };
 
   useEffect(() => {
     fetchListings();
   }, []);
+  
+  useEffect(() => {
+    fetchUserDatasets();
+  }, [currentAccount?.address]);
 
   const userState = {
     allListings,
     appLoading,
+    userDatasets,
+    fetchListings
   };
 
   return (

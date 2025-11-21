@@ -2,10 +2,11 @@
 import { ArrowRight, BarChart, Inbox, Trophy, UploadCloud } from "lucide-react";
 
 import { useState } from "react";
-import { mockAssets } from "@/lib/mockData";
 import AssetCard from "@/components/Marketplace/AssetCard";
 import Button from "@/components/Common/Button";
 import Link from "next/link";
+import { useAppContext } from "@/context/AppContext";
+import { useCurrentAccount } from "@mysten/dapp-kit";
 
 interface PublishedTabProps {
   address: string;
@@ -13,12 +14,17 @@ interface PublishedTabProps {
 
 const PublishedTab = ({ address }: PublishedTabProps) => {
   const [sortBy, setSortBy] = useState<"recent" | "popular" | "revenue">("recent");
+  const { allListings } = useAppContext();
+  const currentAccount = useCurrentAccount();
 
-  // Mock user's published assets (filter first 6 from mockAssets)
-  const publishedAssets = mockAssets.slice(0, 6);
+  // Filter assets published by this address
+  const publishedAssets = allListings?.filter(asset => asset.owner === address) || [];
+  
+  // Check if viewing own profile
+  const isOwnProfile = currentAccount?.address === address;
 
   const sortedAssets = [...publishedAssets].sort((a, b) => {
-    if (sortBy === "recent") return b.id.id.localeCompare(a.id.id);
+    if (sortBy === "recent") return b.release_date - a.release_date;
     if (sortBy === "popular") return b.amount_sold - a.amount_sold;
     if (sortBy === "revenue") return b.price * b.amount_sold - a.price * a.amount_sold;
     return 0;
@@ -65,15 +71,19 @@ const PublishedTab = ({ address }: PublishedTabProps) => {
             No Published Datasets
           </h3>
           <p className="font-mono text-sm text-gray-400 mb-6 max-w-md mx-auto">
-            You haven't published any datasets yet. Start earning by sharing your data
-            on the marketplace.
+            {isOwnProfile 
+              ? "You haven't published any datasets yet. Start earning by sharing your data on the marketplace."
+              : "This user hasn't published any datasets yet."
+            }
           </p>
-          <Link href="/publish">
-            <Button variant="primary" size="lg">
-              <UploadCloud className="w-5 h-5" />
-              Publish Dataset
-            </Button>
-          </Link>
+          {isOwnProfile && (
+            <Link href="/publish">
+              <Button variant="primary" size="lg">
+                <UploadCloud className="w-5 h-5" />
+                Publish Dataset
+              </Button>
+            </Link>
+          )}
         </div>
       )}
 
@@ -136,7 +146,7 @@ const PublishedTab = ({ address }: PublishedTabProps) => {
                 {sortedAssets[0].amount_sold} sales • {sortedAssets[0].price * sortedAssets[0].amount_sold} CAPY revenue
               </p>
             </div>
-            <Link href={`/item/${sortedAssets[0].id}`}>
+            <Link href={`/item/${sortedAssets[0].id.id}`}>
               <Button variant="outline" size="sm">
                 View Details
                 <ArrowRight className="w-4 h-4" />

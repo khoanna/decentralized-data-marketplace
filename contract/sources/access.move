@@ -84,7 +84,5 @@ module contract::access {
     public fun seal_approve(_id: vector<u8> ,dataset: &Dataset, nft: &NFT){
         assert!(object::id(dataset) == nft.dataset_id, EInvalidOwnership);
     }
-    
-
 
 }
