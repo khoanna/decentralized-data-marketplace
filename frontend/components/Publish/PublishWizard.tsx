@@ -15,12 +15,13 @@ import { useState } from "react";
 import Button from "@/components/Common/Button";
 import useMarketplace from "@/hooks/useMarketplace";
 import { useToast } from "@/hooks/useToast";
+import { useCurrentAccount } from "@mysten/dapp-kit";
 
 // Assuming these components exist in your project structure
 import MetadataStep from "./MetadataStep";
 import AssetLocationStep from "./AssetLocationStep";
 import PricingStep from "./PricingStep";
-import AdvancedSettingsStep from "./AdvancedSettingsStep";
+import ReviewStep from "./ReviewStep";
 import DeployProgress from "./DeployProgress";
 
 export interface PublishFormData {
@@ -35,16 +36,10 @@ export interface PublishFormData {
   filetype: string;
 
   // Pricing
-  pricingModel: "free" | "fixed" | "dynamic";
+  pricingModel: "free" | "fixed";
   price: number;
-  license: string;
 
   // Advanced
-  accessType: "download" | "compute";
-  allowList: string[];
-  whitelistedAlgorithms: string[];
-  sampleAvailable: boolean;
-  expirationDate?: string;
   releaseDate?: number;
 }
 
@@ -56,11 +51,6 @@ const INITIAL_FORM_DATA: PublishFormData = {
   filetype: "",
   pricingModel: "fixed",
   price: 0,
-  license: "CC0",
-  accessType: "download",
-  allowList: [],
-  whitelistedAlgorithms: [],
-  sampleAvailable: true,
   releaseDate: Date.now(),
 };
 
@@ -68,15 +58,17 @@ const PublishWizard = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<PublishFormData>(INITIAL_FORM_DATA);
   const [isDeploying, setIsDeploying] = useState(false);
+  const [txResult, setTxResult] = useState<{digest: string; effects?: any} | null>(null);
   
-  const { uploadFile, loading } = useMarketplace();
+  const { uploadFile, loading, isReady } = useMarketplace();
   const { addToast } = useToast();
+  const currentAccount = useCurrentAccount();
 
   const steps = [
     { number: 1, title: "METADATA", icon: <FileText className="w-4 h-4" />, sub: "Describe Asset" },
     { number: 2, title: "SOURCE", icon: <Database className="w-4 h-4" />, sub: "Upload/Link" },
     { number: 3, title: "VALUE", icon: <DollarSign className="w-4 h-4" />, sub: "Set Price" },
-    { number: 4, title: "CONFIG", icon: <Settings className="w-4 h-4" />, sub: "Access Control" },
+    { number: 4, title: "REVIEW", icon: <Settings className="w-4 h-4" />, sub: "Check Details" },
     { number: 5, title: "DEPLOY", icon: <Rocket className="w-4 h-4" />, sub: "Launch" },
   ];
 
@@ -105,33 +97,57 @@ const PublishWizard = () => {
       return;
     }
 
+    if (!currentAccount) {
+      addToast("Please connect your wallet first", "error");
+      return;
+    }
+
+    if (!isReady) {
+      addToast("Walrus SDK is not ready. Please wait...", "error");
+      return;
+    }
+
+    if (!formData.uploadedFile) {
+      addToast("Please upload a file", "error");
+      return;
+    }
+
     setIsDeploying(true);
     
     try {
-      // Upload file to Walrus network
-      if (formData.uploadedFile) {
-        addToast("Uploading file to Walrus network...", "info");
-        
-        await uploadFile(
-          formData.uploadedFile,
-          formData.title,
-          formData.filename,
-          formData.filetype,
-          formData.description,
-          formData.tags,
-          formData.price,
-          formData.releaseDate || Date.now()
-        );
-        
-        addToast("File uploaded successfully!", "success");
-      }
+      addToast("Encrypting and uploading file to Walrus network...", "info");
       
-      // Move to deploy step to show progress
+      // uploadFile now handles:
+      // 1. Encrypting the file
+      // 2. Uploading to Walrus
+      // 3. Creating transaction
+      // 4. Signing and executing transaction
+      // 5. Waiting for transaction confirmation
+      
+      // Note: Move contract requires price > 0, so we use 1 for free datasets
+      const actualPrice = formData.pricingModel === "free" ? 1 : formData.price;
+      
+      const result = await uploadFile(
+        formData.uploadedFile,
+        formData.title,
+        formData.filename,
+        formData.filetype,
+        formData.description,
+        formData.tags,
+        actualPrice,
+        formData.releaseDate || Date.now()
+      );
+      
+      setTxResult(result);
+      addToast("Dataset published successfully!", "success");
+      
+      // Move to deploy step to show success
       setCurrentStep(5);
       
     } catch (error) {
       console.error("Deployment error:", error);
       addToast(`Deployment failed: ${error instanceof Error ? error.message : "Unknown error"}`, "error");
+    } finally {
       setIsDeploying(false);
     }
   };
@@ -154,7 +170,6 @@ const PublishWizard = () => {
     }
 
     if (currentStep === 4) {
-      // On the last config step, trigger deployment
       await handleDeploy();
     } else if (currentStep < 5) {
       setCurrentStep(currentStep + 1);
@@ -264,9 +279,9 @@ const PublishWizard = () => {
               <PricingStep formData={formData} updateFormData={updateFormData} />
             )}
             {currentStep === 4 && (
-              <AdvancedSettingsStep formData={formData} updateFormData={updateFormData} />
+              <ReviewStep formData={formData} />
             )}
-            {currentStep === 5 && <DeployProgress formData={formData} onComplete={handleDeploymentComplete} />}
+            {currentStep === 5 && <DeployProgress formData={formData} txResult={txResult} onComplete={handleDeploymentComplete} />}
           </div>
         </div>
       </div>

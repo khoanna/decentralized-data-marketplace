@@ -1,8 +1,8 @@
 "use client";
-import { Check, Coins, Database, DollarSign, FileText, Gift, Globe, Info, Link, Loader, Settings, Sparkles, Tag, TrendingUp, Upload } from "lucide-react";
+import { Check, Coins, DollarSign, Gift, Info, Sparkles, Tag, TrendingUp } from "lucide-react";
 
 import { PublishFormData } from "./PublishWizard";
-import { Input, Select } from "@/components/Common/Input";
+import { Input } from "@/components/Common/Input";
 import { capyToUSD, formatUSD } from "@/lib/utils";
 
 interface PricingStepProps {
@@ -26,24 +26,6 @@ const PricingStep = ({ formData, updateFormData }: PricingStepProps) => {
       description: "Set a one-time purchase price",
       details: "Buyers pay a fixed amount of CAPY tokens for permanent access.",
     },
-    {
-      value: "dynamic" as const,
-      icon: <TrendingUp className="w-6 h-6" />,
-      label: "Dynamic (AMM)",
-      description: "Automated Market Maker bonding curve",
-      details: "Price adjusts automatically based on supply and demand. Early buyers get lower prices.",
-    },
-  ];
-
-  const licenses = [
-    { value: "CC0", label: "CC0 - Public Domain" },
-    { value: "CC-BY", label: "CC BY - Attribution Required" },
-    { value: "CC-BY-SA", label: "CC BY-SA - Attribution + ShareAlike" },
-    { value: "CC-BY-NC", label: "CC BY-NC - Non-Commercial" },
-    { value: "MIT", label: "MIT License" },
-    { value: "Apache-2.0", label: "Apache License 2.0" },
-    { value: "GPL-3.0", label: "GPL 3.0" },
-    { value: "Custom", label: "Custom License" },
   ];
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,10 +37,10 @@ const PricingStep = ({ formData, updateFormData }: PricingStepProps) => {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-sans font-bold text-white mb-2">
-          Pricing & License
+          Pricing Model
         </h2>
         <p className="font-mono text-sm text-gray-400">
-          Choose how you want to monetize your dataset and specify usage rights.
+          Choose how you want to monetize your dataset.
         </p>
       </div>
 
@@ -67,7 +49,7 @@ const PricingStep = ({ formData, updateFormData }: PricingStepProps) => {
         <label className="block font-mono text-xs text-gray-400 mb-3 tracking-wide">
           Pricing Model *
         </label>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {pricingModels.map((model) => (
             <button
               key={model.value}
@@ -99,19 +81,19 @@ const PricingStep = ({ formData, updateFormData }: PricingStepProps) => {
         </div>
       </div>
 
-      {/* Price Input (for fixed and dynamic) */}
+      {/* Price Input (for fixed) */}
       {formData.pricingModel !== "free" && (
         <div className="glass-card p-6 rounded-lg">
           <div className="flex items-center gap-2 mb-4">
             <Coins className="w-5 h-5 text-yuzu" />
             <h3 className="font-sans font-bold text-white">
-              {formData.pricingModel === "fixed" ? "Set Price" : "Initial Price"}
+              Set Price
             </h3>
           </div>
 
           <div className="space-y-4">
             <Input
-              label={formData.pricingModel === "fixed" ? "Price (CAPY) *" : "Starting Price (CAPY) *"}
+              label="Price (CAPY) *"
               type="number"
               placeholder="50"
               value={formData.price || ""}
@@ -123,26 +105,6 @@ const PricingStep = ({ formData, updateFormData }: PricingStepProps) => {
               }
               icon={<DollarSign className="w-4 h-4" />}
             />
-
-            {formData.pricingModel === "dynamic" && (
-              <div className="p-4 glass-input rounded-lg border border-info/30">
-                <div className="flex items-start gap-3">
-                  <Info className="w-5 h-5 text-info mt-0.5" />
-                  <div>
-                    <p className="font-mono text-sm text-white mb-2 font-bold">
-                      AMM Bonding Curve
-                    </p>
-                    <p className="font-mono text-xs text-gray-400 leading-relaxed mb-2">
-                      The initial price you set becomes the starting point of the bonding curve.
-                      As more people purchase, the price automatically increases. When people sell, the price decreases.
-                    </p>
-                    <p className="font-mono text-xs text-hydro">
-                      This creates a fair market-driven pricing mechanism.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* Price Breakdown */}
             {formData.price > 0 && (
@@ -202,32 +164,6 @@ const PricingStep = ({ formData, updateFormData }: PricingStepProps) => {
           </ul>
         </div>
       )}
-
-      {/* License Selection */}
-      <Select
-        label="License *"
-        value={formData.license}
-        onChange={(e) => updateFormData({ license: e.target.value })}
-        options={licenses}
-        hint="Specify how others can use your dataset"
-      />
-
-      {/* License Info */}
-      <div className="p-4 glass-input rounded-lg">
-        <div className="flex items-start gap-3">
-          <FileText className="w-5 h-5 text-gray-400 mt-0.5" />
-          <div>
-            <p className="font-mono text-sm text-white mb-2">
-              About Licenses
-            </p>
-            <p className="font-mono text-xs text-gray-400 leading-relaxed">
-              Choose a license that matches your goals. Creative Commons licenses are ideal
-              for datasets. Open source licenses (MIT, Apache, GPL) work well for algorithms.
-              Custom licenses allow you to define specific terms.
-            </p>
-          </div>
-        </div>
-      </div>
 
       {/* Revenue Projection (for paid models) */}
       {formData.pricingModel !== "free" && formData.price > 0 && (
