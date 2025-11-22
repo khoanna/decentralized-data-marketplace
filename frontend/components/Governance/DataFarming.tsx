@@ -114,7 +114,7 @@ const DataFarming = () => {
             <span className="text-sm ml-1">CAPY</span>
           </p>
           <p className="font-mono text-xs text-gray-500">
-            ≈ {formatUSD(capyToUSD(totalStaked))}
+            ≈ {formatUSD(suiToUSD(totalStaked))}
           </p>
         </div>
 
@@ -128,7 +128,7 @@ const DataFarming = () => {
             <span className="text-sm ml-1">CAPY</span>
           </p>
           <p className="font-mono text-xs text-gray-500">
-            ≈ {formatUSD(capyToUSD(totalPending))}
+            ≈ {formatUSD(suiToUSD(totalPending))}
           </p>
         </div>
 
