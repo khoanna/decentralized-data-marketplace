@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import * as THREE from "three";
+// @ts-ignore
 import { CSS3DRenderer, CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
 import { createRoot, Root } from "react-dom/client";
 import PlanetMetadataOverlay from "./PlanetMetadataOverlay";
@@ -55,6 +56,7 @@ export default function WebGLBackground() {
   const asteroidsRef = useRef<Asteroid[]>([]);
   const spacecraftRef = useRef<Spacecraft[]>([]);
   const animationFrameRef = useRef<number | undefined>(undefined);
+  const sunRef = useRef<{ mesh: THREE.Mesh, glow: THREE.Mesh } | null>(null);
   
   // CSS3D Refs
   const selectedPlanetMeshRef = useRef<THREE.Mesh | null>(null);
@@ -114,13 +116,291 @@ export default function WebGLBackground() {
     const ambientLight = new THREE.AmbientLight(0x606080, 0.4);
     scene.add(ambientLight);
 
-    const sunLight = new THREE.PointLight(0xffffee, 2, 2500);
-    sunLight.position.set(800, 400, 600);
+    // Sun light positioned to match sun object - subdued intensity
+    const sunLight = new THREE.PointLight(0xffbb88, 2.0, 3500);
+    sunLight.position.set(1000, 600, -1200);
+    sunLight.castShadow = false;
     scene.add(sunLight);
 
     const backLight = new THREE.DirectionalLight(0x4488ff, 0.5);
     backLight.position.set(-500, 200, -500);
     scene.add(backLight);
+
+    // ============================================
+    // SUN OBJECT - Cinematic realistic sun
+    // ============================================
+    const createSun = () => {
+      // Sun core with turbulence shader - larger for cinematic effect
+      const sunGeometry = new THREE.SphereGeometry(200, 128, 128);
+      
+      // Custom shader for realistic burning sun effect
+      const vertexShader = `
+        varying vec2 vUv;
+        varying vec3 vNormal;
+        varying vec3 vPosition;
+        uniform float time;
+        
+        // 3D Noise function for surface displacement
+        vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+        vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+        vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
+        vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+        
+        float snoise(vec3 v) {
+          const vec2 C = vec2(1.0/6.0, 1.0/3.0);
+          const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
+          vec3 i  = floor(v + dot(v, C.yyy));
+          vec3 x0 = v - i + dot(i, C.xxx);
+          vec3 g = step(x0.yzx, x0.xyz);
+          vec3 l = 1.0 - g;
+          vec3 i1 = min(g.xyz, l.zxy);
+          vec3 i2 = max(g.xyz, l.zxy);
+          vec3 x1 = x0 - i1 + C.xxx;
+          vec3 x2 = x0 - i2 + C.yyy;
+          vec3 x3 = x0 - D.yyy;
+          i = mod289(i);
+          vec4 p = permute(permute(permute(
+                     i.z + vec4(0.0, i1.z, i2.z, 1.0))
+                   + i.y + vec4(0.0, i1.y, i2.y, 1.0))
+                   + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+          float n_ = 0.142857142857;
+          vec3 ns = n_ * D.wyz - D.xzx;
+          vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+          vec4 x_ = floor(j * ns.z);
+          vec4 y_ = floor(j - 7.0 * x_);
+          vec4 x = x_ * ns.x + ns.yyyy;
+          vec4 y = y_ * ns.x + ns.yyyy;
+          vec4 h = 1.0 - abs(x) - abs(y);
+          vec4 b0 = vec4(x.xy, y.xy);
+          vec4 b1 = vec4(x.zw, y.zw);
+          vec4 s0 = floor(b0)*2.0 + 1.0;
+          vec4 s1 = floor(b1)*2.0 + 1.0;
+          vec4 sh = -step(h, vec4(0.0));
+          vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
+          vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
+          vec3 p0 = vec3(a0.xy, h.x);
+          vec3 p1 = vec3(a0.zw, h.y);
+          vec3 p2 = vec3(a1.xy, h.z);
+          vec3 p3 = vec3(a1.zw, h.w);
+          vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
+          p0 *= norm.x;
+          p1 *= norm.y;
+          p2 *= norm.z;
+          p3 *= norm.w;
+          vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+          m = m * m;
+          return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
+        }
+        
+        void main() {
+          vUv = uv;
+          vNormal = normalize(normalMatrix * normal);
+          
+          // Multi-octave noise for realistic solar flare surface
+          float noise1 = snoise(normal * 2.0 + time * 0.05);
+          float noise2 = snoise(normal * 4.0 + time * 0.08);
+          float noise3 = snoise(normal * 8.0 + time * 0.12);
+          float displacement = (noise1 * 0.5 + noise2 * 0.3 + noise3 * 0.2) * 8.0;
+          
+          vec3 newPosition = position + normal * displacement;
+          vPosition = newPosition;
+          
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+        }
+      `;
+
+      const fragmentShader = `
+        varying vec2 vUv;
+        varying vec3 vNormal;
+        varying vec3 vPosition;
+        uniform float time;
+        
+        // Simplex noise function
+        vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+        vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+        vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
+        vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+        
+        float snoise(vec3 v) {
+          const vec2 C = vec2(1.0/6.0, 1.0/3.0);
+          const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
+          vec3 i  = floor(v + dot(v, C.yyy));
+          vec3 x0 = v - i + dot(i, C.xxx);
+          vec3 g = step(x0.yzx, x0.xyz);
+          vec3 l = 1.0 - g;
+          vec3 i1 = min(g.xyz, l.zxy);
+          vec3 i2 = max(g.xyz, l.zxy);
+          vec3 x1 = x0 - i1 + C.xxx;
+          vec3 x2 = x0 - i2 + C.yyy;
+          vec3 x3 = x0 - D.yyy;
+          i = mod289(i);
+          vec4 p = permute(permute(permute(
+                     i.z + vec4(0.0, i1.z, i2.z, 1.0))
+                   + i.y + vec4(0.0, i1.y, i2.y, 1.0))
+                   + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+          float n_ = 0.142857142857;
+          vec3 ns = n_ * D.wyz - D.xzx;
+          vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+          vec4 x_ = floor(j * ns.z);
+          vec4 y_ = floor(j - 7.0 * x_);
+          vec4 x = x_ * ns.x + ns.yyyy;
+          vec4 y = y_ * ns.x + ns.yyyy;
+          vec4 h = 1.0 - abs(x) - abs(y);
+          vec4 b0 = vec4(x.xy, y.xy);
+          vec4 b1 = vec4(x.zw, y.zw);
+          vec4 s0 = floor(b0)*2.0 + 1.0;
+          vec4 s1 = floor(b1)*2.0 + 1.0;
+          vec4 sh = -step(h, vec4(0.0));
+          vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
+          vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
+          vec3 p0 = vec3(a0.xy, h.x);
+          vec3 p1 = vec3(a0.zw, h.y);
+          vec3 p2 = vec3(a1.xy, h.z);
+          vec3 p3 = vec3(a1.zw, h.w);
+          vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
+          p0 *= norm.x;
+          p1 *= norm.y;
+          p2 *= norm.z;
+          p3 *= norm.w;
+          vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+          m = m * m;
+          return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
+        }
+
+        void main() {
+          // Multi-layered turbulent noise for realistic solar surface
+          vec3 noiseCoord = vPosition * 0.01;
+          float noiseVal1 = snoise(vec3(vUv * 3.0, time * 0.08));
+          float noiseVal2 = snoise(vec3(vUv * 6.0 + 100.0, time * 0.12));
+          float noiseVal3 = snoise(vec3(vUv * 12.0 - 200.0, time * 0.15));
+          
+          float combinedNoise = noiseVal1 * 0.5 + noiseVal2 * 0.3 + noiseVal3 * 0.2;
+          
+          // Realistic sun colors - subdued, not too bright
+          vec3 deepRed = vec3(0.5, 0.08, 0.0);      // Deep crimson core
+          vec3 darkOrange = vec3(0.7, 0.25, 0.05);  // Burning orange
+          vec3 warmYellow = vec3(0.85, 0.55, 0.25); // Warm yellow corona
+          
+          // Mix colors based on noise for plasma effect
+          vec3 baseColor = mix(deepRed, darkOrange, combinedNoise * 0.5 + 0.5);
+          baseColor = mix(baseColor, warmYellow, pow(combinedNoise * 0.5 + 0.5, 2.0) * 0.6);
+          
+          // Fresnel effect for edge glow (subdued)
+          vec3 viewDirection = normalize(cameraPosition - vPosition);
+          float fresnel = pow(1.0 - abs(dot(viewDirection, vNormal)), 2.5);
+          vec3 fresnelColor = vec3(0.65, 0.35, 0.15) * fresnel * 0.7;
+          
+          // Add some darker spots (sunspots)
+          float spotNoise = snoise(vPosition * 0.15 + time * 0.02);
+          float spots = smoothstep(0.3, 0.5, spotNoise);
+          baseColor = mix(baseColor * 0.4, baseColor, spots);
+          
+          vec3 finalColor = baseColor + fresnelColor;
+          
+          // Enhanced visibility while keeping cinematic look
+          finalColor = finalColor * 1.8;
+
+          gl_FragColor = vec4(finalColor, 1.0);
+        }
+      `;
+
+      const sunMaterial = new THREE.ShaderMaterial({
+        uniforms: {
+          time: { value: 0 }
+        },
+        vertexShader,
+        fragmentShader,
+        side: THREE.FrontSide,
+        transparent: false
+      });
+
+      const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+      // Position sun in visible area - upper right background for cinematic effect
+      sun.position.set(1000, 600, -1200);
+      scene.add(sun);
+
+      // Sun Corona/Atmosphere - Multiple layers for realism
+      const coronaGeometry = new THREE.SphereGeometry(240, 64, 64);
+      const coronaMaterial = new THREE.ShaderMaterial({
+        uniforms: {
+          time: { value: 0 },
+          glowColor: { value: new THREE.Color(0xff6622) }
+        },
+        vertexShader: `
+          varying vec3 vNormal;
+          varying vec3 vPosition;
+          void main() {
+            vNormal = normalize(normalMatrix * normal);
+            vPosition = position;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `,
+        fragmentShader: `
+          uniform vec3 glowColor;
+          uniform float time;
+          varying vec3 vNormal;
+          varying vec3 vPosition;
+          
+          void main() {
+            vec3 viewDirection = normalize(cameraPosition - vPosition);
+            float intensity = pow(0.6 - dot(vNormal, viewDirection), 3.5);
+            
+            // Pulsating effect
+            float pulse = sin(time * 0.5) * 0.15 + 0.95;
+            intensity *= pulse;
+            
+            vec3 glow = glowColor * intensity * 0.8; // Enhanced glow for visibility
+            gl_FragColor = vec4(glow, intensity * 0.8);
+          }
+        `,
+        side: THREE.BackSide,
+        blending: THREE.AdditiveBlending,
+        transparent: true,
+        depthWrite: false
+      });
+
+      const corona = new THREE.Mesh(coronaGeometry, coronaMaterial);
+      corona.position.copy(sun.position);
+      scene.add(corona);
+
+      // Outer atmospheric glow - very subtle
+      const atmoGeometry = new THREE.SphereGeometry(320, 64, 64);
+      const atmoMaterial = new THREE.ShaderMaterial({
+        uniforms: {
+          glowColor: { value: new THREE.Color(0xff8844) }
+        },
+        vertexShader: `
+          varying vec3 vNormal;
+          void main() {
+            vNormal = normalize(normalMatrix * normal);
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `,
+        fragmentShader: `
+          uniform vec3 glowColor;
+          varying vec3 vNormal;
+          
+          void main() {
+            float intensity = pow(0.5 - dot(vNormal, vec3(0, 0, 1.0)), 4.0);
+            vec3 glow = glowColor * intensity * 0.6;
+            gl_FragColor = vec4(glow, intensity * 0.5);
+          }
+        `,
+        side: THREE.BackSide,
+        blending: THREE.AdditiveBlending,
+        transparent: true,
+        depthWrite: false
+      });
+
+      const atmosphere = new THREE.Mesh(atmoGeometry, atmoMaterial);
+      atmosphere.position.copy(sun.position);
+      scene.add(atmosphere);
+
+      sunRef.current = { mesh: sun, glow: corona };
+      
+      // Store atmosphere reference for updates
+      (sun as any).atmosphere = atmosphere;
+    };
 
     // ============================================
     // STAR FIELD
@@ -479,6 +759,7 @@ export default function WebGLBackground() {
       }
     };
 
+    createSun();
     createStarField();
     createPlanets();
     createAsteroids();
@@ -597,7 +878,8 @@ export default function WebGLBackground() {
           const cssObject = new CSS3DObject(div);
           
           // Position near planet but slightly offset towards camera
-          const offset = clickedMesh.geometry.parameters.radius * 1.5 + 50;
+          const geometry = clickedMesh.geometry as THREE.SphereGeometry;
+          const offset = (geometry.parameters?.radius || 100) * 1.5 + 50;
           cssObject.position.copy(clickedMesh.position);
           cssObject.position.x += offset;
           
@@ -703,6 +985,33 @@ export default function WebGLBackground() {
     const animate = () => {
       animationFrameRef.current = requestAnimationFrame(animate);
       time += 0.01;
+
+      // Update Sun Shader with realistic slow rotation
+      if (sunRef.current) {
+        const sunMaterial = sunRef.current.mesh.material as THREE.ShaderMaterial;
+        if (sunMaterial.uniforms) {
+          sunMaterial.uniforms.time.value = time;
+        }
+        
+        // Update Corona (glow) Shader
+        const coronaMaterial = sunRef.current.glow.material as THREE.ShaderMaterial;
+        if (coronaMaterial.uniforms) {
+          coronaMaterial.uniforms.time.value = time;
+        }
+        
+        // Update atmosphere if exists
+        const atmosphere = (sunRef.current.mesh as any).atmosphere;
+        if (atmosphere) {
+          const atmoMaterial = atmosphere.material as THREE.ShaderMaterial;
+          if (atmoMaterial.uniforms && atmoMaterial.uniforms.time) {
+            atmoMaterial.uniforms.time.value = time;
+          }
+        }
+        
+        // Very slow rotation for realistic effect
+        sunRef.current.mesh.rotation.y += 0.0005;
+        sunRef.current.mesh.rotation.x += 0.0002;
+      }
 
       mouseRef.current.x += (mouseRef.current.targetX - mouseRef.current.x) * 0.05;
       mouseRef.current.y += (mouseRef.current.targetY - mouseRef.current.y) * 0.05;
@@ -828,7 +1137,8 @@ export default function WebGLBackground() {
         // Simply follow the planet exactly
         // The offset is already applied when adding the object
         // But we need to update it because the planet moves
-        const offset = planet.geometry.parameters.radius * 1.5 + 50;
+        const geometry = planet.geometry as THREE.SphereGeometry;
+        const offset = (geometry.parameters?.radius || 100) * 1.5 + 50;
         
         cssObjectRef.current.position.copy(planet.position);
         // We can make it orbit or just stick to the side.
@@ -893,6 +1203,27 @@ export default function WebGLBackground() {
         });
         scene.remove(spacecraft.mesh);
       });
+
+      // Sun Cleanup (sun, corona, and atmosphere)
+      if (sunRef.current) {
+        // Clean sun mesh
+        sunRef.current.mesh.geometry.dispose();
+        (sunRef.current.mesh.material as THREE.Material).dispose();
+        scene.remove(sunRef.current.mesh);
+        
+        // Clean corona (glow)
+        sunRef.current.glow.geometry.dispose();
+        (sunRef.current.glow.material as THREE.Material).dispose();
+        scene.remove(sunRef.current.glow);
+        
+        // Clean atmosphere
+        const atmosphere = (sunRef.current.mesh as any).atmosphere;
+        if (atmosphere) {
+          atmosphere.geometry.dispose();
+          (atmosphere.material as THREE.Material).dispose();
+          scene.remove(atmosphere);
+        }
+      }
 
       if (cssObjectRef.current) {
         scene.remove(cssObjectRef.current);

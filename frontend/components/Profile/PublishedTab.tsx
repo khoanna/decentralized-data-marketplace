@@ -22,7 +22,7 @@ const PublishedTab = ({ address }: PublishedTabProps) => {
   const { allListings, fetchListings } = useAppContext();
   const currentAccount = useCurrentAccount();
   const { setTitle, setDescription, setPrice, loading } = useProfile();
-  const { showToast } = useToast();
+  const { addToast } = useToast();
 
   const [editingAsset, setEditingAsset] = useState<Asset | null>(null);
   const [editForm, setEditForm] = useState({ title: "", description: "", price: "" });
@@ -51,30 +51,69 @@ const PublishedTab = ({ address }: PublishedTabProps) => {
 
   const handleSave = async () => {
     if (!editingAsset) return;
+
+    const updates: string[] = [];
+    let hasError = false;
+
     try {
-      let updated = false;
+      // Track which fields are being updated
       if (editForm.title !== editingAsset.title) {
-        await setTitle(editingAsset.id.id, editForm.title);
-        updated = true;
+        updates.push("title");
       }
       if (editForm.description !== editingAsset.description) {
-        await setDescription(editingAsset.id.id, editForm.description);
-        updated = true;
+        updates.push("description");
       }
       const newPrice = Number(editForm.price);
       if (!isNaN(newPrice) && newPrice !== editingAsset.price) {
-         await setPrice(editingAsset.id.id, newPrice);
-         updated = true;
+        updates.push("price");
       }
 
-      if (updated) {
-        showToast({ type: "success", message: "Dataset updated successfully" });
-        await fetchListings();
+      if (updates.length === 0) {
+        addToast("No changes detected", "info");
+        setEditingAsset(null);
+        return;
       }
-      setEditingAsset(null);
+
+      // Execute updates sequentially with individual error handling
+      for (const field of updates) {
+        try {
+          if (field === "title") {
+            await setTitle(editingAsset.id.id, editForm.title);
+          } else if (field === "description") {
+            await setDescription(editingAsset.id.id, editForm.description);
+          } else if (field === "price") {
+            const newPrice = Number(editForm.price);
+            await setPrice(editingAsset.id.id, newPrice);
+          }
+        } catch (error) {
+          console.error(`Failed to update ${field}:`, error);
+          const errorMessage = error instanceof Error ? error.message : "Unknown error";
+          addToast(
+            `Failed to update ${field}: ${errorMessage}`,
+            "error"
+          );
+          hasError = true;
+          break; // Stop on first error
+        }
+      }
+
+      if (!hasError) {
+        // All updates successful
+        const updatedFields = updates.join(", ");
+        addToast(
+          `Successfully updated ${updatedFields} for "${editingAsset.title}"`,
+          "success"
+        );
+        await fetchListings();
+        setEditingAsset(null);
+      }
     } catch (error) {
-      console.error(error);
-      showToast({ type: "error", message: "Failed to update dataset" });
+      console.error("Unexpected error during dataset update:", error);
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      addToast(
+        `Failed to update dataset: ${errorMessage}`,
+        "error"
+      );
     }
   };
 

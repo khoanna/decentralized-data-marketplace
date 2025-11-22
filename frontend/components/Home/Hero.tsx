@@ -70,7 +70,7 @@ const Hero = () => {
               <div className="relative w-full h-full rounded-3xl overflow-hidden border-4 border-yuzu/50 shadow-[0_0_60px_rgba(255,159,28,0.3)] animate-float group
                 hover:border-yuzu hover:border-[6px] hover:shadow-[0_0_120px_rgba(255,159,28,0.8),0_0_200px_rgba(78,205,196,0.5),0_0_280px_rgba(149,214,0,0.3)]
                 hover:scale-[1.08] hover:-translate-y-3 hover:rotate-[0.5deg] hover:animate-[rainbow-glow_3s_ease-in-out_infinite]
-                transition-all duration-[800] ease-[cubic-bezier(0.23,1,0.32,1)]
+                transition-all duration-[800ms] ease-[cubic-bezier(0.23,1,0.32,1)]
                 will-change-transform origin-center">
 
                 <Image
