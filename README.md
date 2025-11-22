@@ -1,4 +1,4 @@
-# CapyData — Decentralized Data Marketplace
+# 🦫 CapyData — Decentralized Data Marketplace
 
 CapyData is a decentralized marketplace for datasets built on the Sui blockchain. It enables dataset creators to encrypt and publish data, sell access with on-chain listings, and let buyers retrieve and decrypt purchased data — all while preserving user control, privacy, and verifiable on-chain provenance.
 
