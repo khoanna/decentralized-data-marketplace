@@ -4,8 +4,6 @@ CapyData is a decentralized marketplace for datasets built on the Sui blockchain
 
 CapyData is designed for Web3-native AI and data workflows: client-side SEAL encryption, Walrus decentralized storage, Move-based dataset NFTs for access control, and a trusted session approval flow for secure decryption.
 
---
-
 ## Features
 
 - Client-side SEAL encryption: files are encrypted in the browser before leaving the user’s machine so raw data never touches the network in plaintext.
@@ -18,6 +16,7 @@ CapyData is designed for Web3-native AI and data workflows: client-side SEAL enc
 
 ## Architecture
 
+```
 Frontend (Next.js + TypeScript)
 	└─ encrypt(file) (SEAL client) → encryptedObject
 	└─ upload encryptedObject → Walrus (blobId)
@@ -28,8 +27,9 @@ Buyer
 	└─ getFile(blobId) → fetch encryptedObject from Walrus
 	└─ seal_approve() (call via a Transaction) → server/session allows decryption
 	└─ decrypt(encryptedObject) → access plaintext locally
+```
 
-ASCII diagram
+## Data Flow
 
 ```
 [User Browser] --(encrypt via Seal)--> [Encrypted Object]
